@@ -18,12 +18,13 @@
 - ✅ **2026-03-04 00:31** — Sidecar sync complete (500 sidecars verified)
 - ✅ **2026-03-04 00:31** — GPU hashing complete (0 files — INCOMING empty)
 - ✅ **2026-03-04 06:08** — Tauri GUI backend builds successfully
+- ✅ **2026-03-04 06:36** — Tauri GUI E2E test complete (13 commands verified)
 
 ## System Health
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Tauri GUI Backend | ✅ Ready | Cargo build successful |
+| Tauri GUI | ✅ Tested E2E | All 13 commands compile, dev server runs |
 | FFmpeg NVENC | ✅ Ready | h264/hevc/av1_nvenc available |
 | Database | ✅ Active | 22 tasks logged, 10 tables |
 | Checkpoint System | ✅ Active | 500 checkpoints, rollback enabled |
