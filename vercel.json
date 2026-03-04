@@ -2,9 +2,9 @@
   "version": 2,
   "buildCommand": "cd gui && npm install && npm run build",
   "outputDirectory": "gui/dist",
-  "installCommand": "cd gui && npm install",
+  "installCommand": "echo skip",
   "framework": null,
   "rewrites": [
-    { "source": "/((?!assets|.*\\..*).*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
