@@ -1,6 +1,6 @@
 # MediaAuditOrganizer Status
 
-**Last Updated:** 2026-03-04 06:09 MST
+**Last Updated:** 2026-03-04 06:27 MST
 
 ## Quick Status
 
@@ -12,6 +12,7 @@
 
 ## Recent Activity
 
+- ✅ **2026-03-04 06:27** — drive64gb safely unmounted (5/5 spot-checks passed)
 - ✅ **2026-03-04 01:44** — drive64gb transfer complete (500 files, 16.68 GB, SHA256 verified)
 - ✅ **2026-03-04 00:31** — Checkpoint sentinel complete (500 checkpoints created)
 - ✅ **2026-03-04 00:31** — Sidecar sync complete (500 sidecars verified)
@@ -32,7 +33,7 @@
 
 | Drive | Status | Files | Size |
 |-------|--------|-------|------|
-| drive64gb | ✅ Transferred | 500 | 16.68 GB |
+| drive64gb | ✅ Ejected & Verified | 500 | 16.68 GB |
 | 128Z | ⚠️ No media | 0 | 0 GB |
 
 ## Blocked On
@@ -49,9 +50,8 @@
 ## Next Actions
 
 1. Test Tauri GUI (`npm run dev` + `cargo run`)
-2. Unmount drive64gb after verification
-3. Process 00_INCOMING contents (pending_review, unknown_types)
-4. Plan next drive ingestion
+2. Process 00_INCOMING contents (pending_review, unknown_types)
+3. Plan next drive ingestion
 
 ---
 
