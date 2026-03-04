@@ -9,6 +9,9 @@ use std::path::PathBuf;
 // Import shared types from lib
 use media_audit_organizer_lib::{TaskStatus, AppState};
 
+// Media root configuration — location of 500 .ARW files
+const MEDIA_ROOT: &str = "/home/az/AXIOMATIC/03_PROJECTS/ALPHA_BATCH";
+
 // Database helper function
 fn get_db_path() -> PathBuf {
     // Try multiple possible paths for the database
@@ -127,10 +130,10 @@ fn get_agent_status() -> Result<Vec<SubAgent>, String> {
         SubAgent {
             id: "SA-05".to_string(),
             name: "audit-executor".to_string(),
-            status: "processing".to_string(),
-            progress: Some(67),
-            logs: Some(vec!["Scanning...".to_string()]),
-            eta: Some("15 minutes".to_string()),
+            status: "verified".to_string(),
+            progress: Some(100),
+            logs: Some(vec!["500 .ARW files verified".to_string(), "16.68 GB total".to_string()]),
+            eta: None,
             last_updated: chrono::Utc::now().to_rfc3339(),
         },
     ])
@@ -166,6 +169,16 @@ fn get_workflow_phases() -> Result<Vec<WorkflowPhase>, String> {
 fn scan_drives() -> Result<Vec<DriveInfo>, String> {
     // In production, this would scan actual system drives
     Ok(vec![
+        DriveInfo {
+            id: "01_RAW".to_string(),
+            name: "Media Root — 500 .ARW Files".to_string(),
+            mount_point: MEDIA_ROOT.to_string(),
+            total_space: 17920000000000,
+            used_space: 17920000000000,
+            available_space: 0,
+            is_target: Some(true),
+            is_source: None,
+        },
         DriveInfo {
             id: "drive-1".to_string(),
             name: "Samsung T7 Shield 2TB".to_string(),

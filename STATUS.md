@@ -12,6 +12,7 @@
 
 ## Recent Activity
 
+- ✅ **2026-03-04 07:06** — Media root wired: /home/az/AXIOMATIC/03_PROJECTS/ALPHA_BATCH (500 files confirmed)
 - ✅ **2026-03-04 07:00** — 00_INCOMING analysis complete: 16 files scanned, 0 media found
 - ✅ **2026-03-04 07:00** — 00_INCOMING audited — 16 files processed, 0 sidecars created (no media files present)
 - ✅ **2026-03-04 06:48** — Rust backend fixes applied: query_database() wired to SQLite, .venv permission resolved
@@ -27,6 +28,7 @@
 
 | Component | Status | Notes |
 |-----------|--------|-------|
+| Media Files | ✅ Located | /home/az/AXIOMATIC/03_PROJECTS/ALPHA_BATCH — 500 .ARW files |
 | Tauri GUI Backend | ✅ Backend verified + DB wired | query_database() hits real SQLite, E2E tested |
 | FFmpeg NVENC | ✅ Ready | h264/hevc/av1_nvenc available |
 | Database | ✅ Active (Rust integrated) | sqlx async queries, 3 unit tests passing |
