@@ -1,6 +1,28 @@
-import { snapshot, tasks } from '../data';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard() {
+  const [snapshot, setSnapshot] = useState<any>(null);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/data/snapshot.json').then(r => r.json()),
+      fetch('/data/tasks.json').then(r => r.json())
+    ]).then(([snapshotData, tasksData]) => {
+      setSnapshot(snapshotData);
+      setTasks(tasksData);
+      setLoading(false);
+    }).catch(err => {
+      console.error('Failed to load dashboard data:', err);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !snapshot) {
+    return <div className="min-h-screen bg-obsidian-900 flex items-center justify-center text-slate-100">Loading...</div>;
+  }
+
   return (
     <div className="dashboard min-h-screen bg-obsidian-900 text-slate-100 p-8">
       {/* SECTION 1: Header */}
@@ -36,7 +58,7 @@ export default function Dashboard() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold text-slate-100 mb-4">Workflow Pipeline</h2>
         <div className="space-y-2">
-          {snapshot.workflow.map((phase, i) => (
+          {snapshot.workflow.map((phase: any, i: number) => (
             <div
               key={i}
               className={`phase p-3 rounded border ${
@@ -68,7 +90,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {snapshot.drives.map((drive, i) => (
+              {snapshot.drives.map((drive: any, i: number) => (
                 <tr key={i} className="border-b border-slate-800 last:border-0">
                   <td className="p-3 text-slate-200">{drive.name}</td>
                   <td className="p-3">
