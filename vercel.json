@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "cd gui && npm install && npm run build && cp -r dist/* landing/ && mkdir -p landing/dashboard landing/data && cp dist/index.html landing/dashboard/ && cp -r dist/data landing/",
+  "buildCommand": "cd gui && npm install && npm run build && cp -r dist/* landing/ && mkdir -p landing/dashboard && cp dist/index.html landing/dashboard/ && cp -r dist/assets landing/dashboard/",
   "outputDirectory": "landing",
   "installCommand": "echo 'install handled in buildCommand'",
   "framework": null,
-  "rewrites": [
-    { "source": "/dashboard", "destination": "/dashboard/index.html" },
-    { "source": "/dashboard/:path*", "destination": "/dashboard/index.html" }
+  "routes": [
+    { "src": "^/dashboard$", "dest": "/dashboard/index.html" },
+    { "src": "^/dashboard/(.*)$", "dest": "/dashboard/index.html" },
+    { "src": "^/assets/(.*)$", "dest": "/assets/$1" },
+    { "src": "^/(.*)$", "dest": "/$1" }
   ]
 }
