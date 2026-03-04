@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive Audit Report - {{ drive_label }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.8/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-dt@1.13.8/css/jquery.dataTables.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #16a34a;
+            --warning-color: #ea580c;
+            --danger-color: #dc2626;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .summary-card .subtext {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Sections */
+        .section {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--background-color);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background-color: var(--background-color);
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: #ffedd5;
+            color: var(--warning-color);
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .badge-info {
+            background-color: #dbeafe;
+            color: var(--primary-color);
+        }
+
+        /* Recommendations */
+        .recommendations {
+            list-style: none;
+        }
+
+        .recommendations li {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .recommendations li.transfer {
+            background-color: #dcfce7;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .recommendations li.review {
+            background-color: #ffedd5;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .recommendations li.skip {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .recommendations li strong {
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .header {
+                box-shadow: none;
+            }
+
+            .section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            .charts-grid {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Drive Audit Report</h1>
+            <div class="header-meta">
+                <span>📁 <strong>Drive:</strong> {{ drive_label or 'Unknown' }}</span>
+                <span>💾 <strong>Capacity:</strong> {{ drive_capacity or 'N/A' }}</span>
+                <span>📅 <strong>Audit Date:</strong> {{ audit_date }}</span>
+                <span>🔍 <strong>Mount Point:</strong> {{ mount_point or 'N/A' }}</span>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Files</h3>
+                <div class="value">{{ total_files }}</div>
+                <div class="subtext">Across all folders</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Size</h3>
+                <div class="value">{{ total_size }}</div>
+                <div class="subtext">Uncompressed</div>
+            </div>
+            <div class="summary-card">
+                <h3>Date Range</h3>
+                <div class="value" style="font-size: 1.25rem;">{{ date_range }}</div>
+                <div class="subtext">Earliest to latest capture</div>
+            </div>
+            <div class="summary-card">
+                <h3>Duplicates</h3>
+                <div class="value">{{ duplicate_count }}</div>
+                <div class="subtext">{{ duplicate_size }} recoverable</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>📁 File Types Distribution</h3>
+                <div class="chart-wrapper">
+                    <canvas id="fileTypeChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>📅 Assets by Month</h3>
+                <div class="chart-wrapper">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Type Breakdown Table -->
+        <div class="section">
+            <h2>File Type Breakdown</h2>
+            <table id="fileTypeTable">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Extension(s)</th>
+                        <th>Count</th>
+                        <th>Size</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file_type in file_types %}
+                    <tr>
+                        <td><strong>{{ file_type.name }}</strong></td>
+                        <td><code>{{ file_type.extensions }}</code></td>
+                        <td>{{ file_type.count }}</td>
+                        <td>{{ file_type.size }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="flex: 1; background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: {{ file_type.percentage }}%; background: var(--primary-color); height: 100%;"></div>
+                                </div>
+                                <span>{{ file_type.percentage }}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Largest Files -->
+        <div class="section">
+            <h2>📦 Largest Files (Top 20)</h2>
+            <table id="largestFilesTable">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Path</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in largest_files %}
+                    <tr>
+                        <td><strong>{{ file.name }}</strong></td>
+                        <td><code style="font-size: 0.85rem;">{{ file.path }}</code></td>
+                        <td><span class="badge badge-info">{{ file.type }}</span></td>
+                        <td>{{ file.size }}</td>
+                        <td>{{ file.date or 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Files Without Metadata -->
+        <div class="section">
+            <h2>⚠️ Files Without Metadata</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                These files are missing EXIF date information and will be placed in <code>UNKNOWN_DATE/</code> for manual review.
+            </p>
+            <table id="noMetadataTable">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Path</th>
+                        <th>Size</th>
+                        <th>File Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files_without_metadata %}
+                    <tr>
+                        <td><strong>{{ file.name }}</strong></td>
+                        <td><code style="font-size: 0.85rem;">{{ file.path }}</code></td>
+                        <td>{{ file.size }}</td>
+                        <td>{{ file.file_date or 'N/A' }}</td>
+                        <td><span class="badge badge-warning">Review Required</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Duplicate Groups -->
+        <div class="section">
+            <h2>🔄 Duplicate Groups</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                Files with identical SHA256 hashes. Consider keeping only one copy to save space.
+            </p>
+            {% for group in duplicate_groups %}
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--background-color); border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <strong>Group {{ loop.index }} — Hash: <code>{{ group.hash_short }}</code></strong>
+                    <span class="badge badge-warning">{{ group.count }} copies</span>
+                </div>
+                <table style="margin-top: 0.5rem;">
+                    <thead>
+                        <tr>
+                            <th>Path</th>
+                            <th>Size</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in group.files %}
+                        <tr>
+                            <td><code style="font-size: 0.85rem;">{{ file.path }}</code></td>
+                            <td>{{ file.size }}</td>
+                            <td>
+                                {% if loop.first %}
+                                <span class="badge badge-success">Keep</span>
+                                {% else %}
+                                <span class="badge badge-danger">Remove</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <h2>✅ Recommended Actions</h2>
+            <ul class="recommendations">
+                <li class="transfer">
+                    <span style="font-size: 1.25rem;">📥</span>
+                    <div>
+                        <strong>Transfer: {{ recommend_transfer_count }} files ({{ recommend_transfer_size }})</strong>
+                        <div style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                            New files not currently in your library. Safe to transfer.
+                        </div>
+                    </div>
+                </li>
+                <li class="review">
+                    <span style="font-size: 1.25rem;">⚠️</span>
+                    <div>
+                        <strong>Review: {{ recommend_review_count }} files ({{ recommend_review_size }})</strong>
+                        <div style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                            Duplicate files. Review before transferring to avoid redundancy.
+                        </div>
+                    </div>
+                </li>
+                <li class="skip">
+                    <span style="font-size: 1.25rem;">⏸️</span>
+                    <div>
+                        <strong>Skip: {{ recommend_skip_count }} files ({{ recommend_skip_size }})</strong>
+                        <div style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                            Already exist in your library (verified by hash). No action needed.
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- File Manifest (Searchable/Sortable) -->
+        <div class="section">
+            <h2>📋 Complete File Manifest</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                Search, sort, and filter all {{ total_files }} files found on this drive.
+            </p>
+            <table id="manifestTable" class="display" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Path</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Date Taken</th>
+                        <th>Camera</th>
+                        <th>Hash (SHA256)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in file_manifest %}
+                    <tr>
+                        <td><strong>{{ file.name }}</strong></td>
+                        <td><code style="font-size: 0.8rem;">{{ file.path }}</code></td>
+                        <td><span class="badge badge-info">{{ file.type }}</span></td>
+                        <td>{{ file.size }}</td>
+                        <td>{{ file.date_taken or 'N/A' }}</td>
+                        <td>{{ file.camera or 'N/A' }}</td>
+                        <td><code style="font-size: 0.7rem;">{{ file.hash_short }}</code></td>
+                        <td>
+                            {% if file.status == 'new' %}
+                            <span class="badge badge-success">New</span>
+                            {% elif file.status == 'duplicate' %}
+                            <span class="badge badge-warning">Duplicate</span>
+                            {% else %}
+                            <span class="badge badge-info">Exists</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>MediaAuditOrganizer</strong> v1.0</p>
+            <p>Report generated: {{ generated_at }}</p>
+            <p>Full audit data: <code>{{ audit_directory }}</code></p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        // File Type Pie Chart
+        const fileTypeCtx = document.getElementById('fileTypeChart').getContext('2d');
+        new Chart(fileTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for ft in file_types %}'{{ ft.name }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for ft in file_types %}{{ ft.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: [
+                        '#2563eb', '#16a34a', '#ea580c', '#dc2626', '#7c3aed', '#0891b2', '#64748b'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + ' files';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Timeline Chart
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for month in timeline_data %}'{{ month.label }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Assets',
+                    data: [{% for month in timeline_data %}{{ month.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: '#2563eb',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // DataTables Initialization
+        $(document).ready(function() {
+            // File Type Table (simple, no pagination)
+            $('#fileTypeTable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                order: [[2, 'desc']]
+            });
+
+            // Largest Files Table
+            $('#largestFilesTable').DataTable({
+                paging: false,
+                searching: true,
+                info: false,
+                order: [[3, 'desc']]
+            });
+
+            // No Metadata Table
+            $('#noMetadataTable').DataTable({
+                paging: false,
+                searching: true,
+                info: false,
+                order: [[0, 'asc']]
+            });
+
+            // Complete Manifest Table (with pagination)
+            $('#manifestTable').DataTable({
+                paging: true,
+                pageLength: 25,
+                searching: true,
+                ordering: true,
+                info: true,
+                order: [[0, 'asc']],
+                scrollX: true,
+                language: {
+                    search: "Filter files:",
+                    info: "Showing _START_ to _END_ of _TOTAL_ files",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

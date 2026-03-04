@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Library Summary - {{ month_name }} {{ year }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #16a34a;
+            --warning-color: #ea580c;
+            --danger-color: #dc2626;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.95;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .header-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+
+        .status-banner.healthy {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status-banner.warning {
+            background-color: #ffedd5;
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .status-banner.critical {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .summary-card .change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .change.positive {
+            color: var(--success-color);
+        }
+
+        .change.neutral {
+            color: var(--secondary-color);
+        }
+
+        .summary-card .subtext {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Sections */
+        .section {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* New Assets Section */
+        .new-assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .asset-stat {
+            background: var(--background-color);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .asset-stat .number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .asset-stat .label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Storage Breakdown */
+        .storage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .storage-card {
+            background: var(--background-color);
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+
+        .storage-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .storage-bar {
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .storage-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #7c3aed);
+            border-radius: 12px;
+            transition: width 0.3s ease;
+        }
+
+        .storage-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .storage-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Backup Health */
+        .backup-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .backup-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .backup-icon {
+            font-size: 2rem;
+        }
+
+        .backup-info {
+            flex: 1;
+        }
+
+        .backup-info strong {
+            display: block;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .backup-info span {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .backup-status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .backup-status-indicator.success {
+            background: var(--success-color);
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+        }
+
+        .backup-status-indicator.warning {
+            background: var(--warning-color);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+        }
+
+        .backup-status-indicator.danger {
+            background: var(--danger-color);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+        }
+
+        /* Warnings/Alerts */
+        .warnings-list {
+            list-style: none;
+        }
+
+        .warnings-list li {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .warnings-list li.warning {
+            background-color: #ffedd5;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .warnings-list li.critical {
+            background-color: #fee2e2;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .warnings-list li strong {
+            color: var(--text-primary);
+        }
+
+        .warnings-list li p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: var(--card-background);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Activity Log Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--background-color);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background-color: var(--background-color);
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        /* Upcoming Tasks */
+        .tasks-list {
+            list-style: none;
+        }
+
+        .tasks-list li {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--background-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tasks-list li input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .tasks-list li label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .task-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            background: white;
+            border-radius: 9999px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .storage-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .header {
+                box-shadow: none;
+            }
+
+            .section {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Monthly Library Summary</h1>
+            <div class="header-subtitle">{{ month_name }} {{ year }}</div>
+            <div class="header-meta">
+                <span>📅 <strong>Period:</strong> {{ period_start }} to {{ period_end }}</span>
+                <span>🔄 <strong>Generated:</strong> {{ generated_at }}</span>
+                <span>📂 <strong>Library:</strong> {{ library_name }}</span>
+            </div>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner {{ library_status_class }}">
+            <span style="font-size: 1.5rem;">{{ library_status_icon }}</span>
+            <div>
+                <div style="font-size: 1.125rem;">{{ library_status_text }}</div>
+                <div style="font-size: 0.875rem; opacity: 0.9;">{{ library_status_detail }}</div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Assets</h3>
+                <div class="value">{{ total_assets }}</div>
+                <div class="change {{ total_assets_change_class }}">
+                    {{ total_assets_change_icon }} {{ total_assets_change }} from last month
+                </div>
+                <div class="subtext">{{ new_photos }} photos, {{ new_videos }} videos added</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Storage</h3>
+                <div class="value">{{ total_storage }}</div>
+                <div class="change {{ total_storage_change_class }}">
+                    {{ total_storage_change_icon }} {{ total_storage_change }} from last month
+                </div>
+                <div class="subtext">{{ storage_used_percent }} of {{ total_capacity }} used</div>
+            </div>
+            <div class="summary-card">
+                <h3>Backup Status</h3>
+                <div class="value" style="font-size: 1.5rem;">{{ backup_status_text }}</div>
+                <div class="change neutral">
+                    Last backup: {{ last_backup_date }}
+                </div>
+                <div class="subtext">{{ backup_lag }} files pending</div>
+            </div>
+            <div class="summary-card">
+                <h3>Drives Processed</h3>
+                <div class="value">{{ drives_processed }}</div>
+                <div class="change neutral">
+                    {{ files_transferred }} files transferred
+                </div>
+                <div class="subtext">{{ duplicates_removed }} duplicates removed</div>
+            </div>
+        </div>
+
+        <!-- New Assets Section -->
+        <div class="section">
+            <h2>🆕 New Assets Added This Month</h2>
+            <div class="new-assets-grid">
+                <div class="asset-stat">
+                    <div class="number">{{ new_assets_total }}</div>
+                    <div class="label">Total Files</div>
+                </div>
+                <div class="asset-stat">
+                    <div class="number">{{ new_photos_count }}</div>
+                    <div class="label">Photos</div>
+                </div>
+                <div class="asset-stat">
+                    <div class="number">{{ new_raw_count }}</div>
+                    <div class="label">RAW Files</div>
+                </div>
+                <div class="asset-stat">
+                    <div class="number">{{ new_jpg_count }}</div>
+                    <div class="label">JPEG Files</div>
+                </div>
+                <div class="asset-stat">
+                    <div class="number">{{ new_videos_count }}</div>
+                    <div class="label">Videos</div>
+                </div>
+                <div class="asset-stat">
+                    <div class="number">{{ new_storage_added }}</div>
+                    <div class="label">Storage Added</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 1rem;">Top Ingests This Month</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Drive/Source</th>
+                        <th>Files</th>
+                        <th>Size</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ingest in top_ingests %}
+                    <tr>
+                        <td>{{ ingest.date }}</td>
+                        <td>{{ ingest.source }}</td>
+                        <td>{{ ingest.files }}</td>
+                        <td>{{ ingest.size }}</td>
+                        <td>
+                            {% if ingest.status == 'complete' %}
+                            <span style="color: var(--success-color);">✅ Complete</span>
+                            {% else %}
+                            <span style="color: var(--warning-color);">⚠️ Partial</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Storage Breakdown -->
+        <div class="section">
+            <h2>💾 Storage Breakdown</h2>
+            <div class="storage-grid">
+                <div class="storage-card">
+                    <h4>Primary Storage</h4>
+                    <div class="storage-bar">
+                        <div class="storage-bar-fill" style="width: {{ primary_storage_percent }}%;"></div>
+                        <div class="storage-bar-text">{{ primary_storage_used }} / {{ primary_storage_total }}</div>
+                    </div>
+                    <div class="storage-details">
+                        <span>{{ primary_storage_percent }}% used</span>
+                        <span>{{ primary_storage_free }} free</span>
+                    </div>
+                </div>
+                <div class="storage-card">
+                    <h4>Local Backup</h4>
+                    <div class="storage-bar">
+                        <div class="storage-bar-fill" style="width: {{ local_backup_percent }}%;"></div>
+                        <div class="storage-bar-text">{{ local_backup_used }} / {{ local_backup_total }}</div>
+                    </div>
+                    <div class="storage-details">
+                        <span>{{ local_backup_percent }}% used</span>
+                        <span>{{ local_backup_free }} free</span>
+                    </div>
+                </div>
+                <div class="storage-card">
+                    <h4>Cloud Backup ({{ cloud_provider }})</h4>
+                    <div class="storage-bar">
+                        <div class="storage-bar-fill" style="width: {{ cloud_storage_percent }}%;"></div>
+                        <div class="storage-bar-text">{{ cloud_storage_used }} / Unlimited</div>
+                    </div>
+                    <div class="storage-details">
+                        <span>Monthly cost: {{ cloud_monthly_cost }}</span>
+                        <span>Versioning: {{ cloud_versioning }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 1rem;">Storage by File Type</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Count</th>
+                        <th>Size</th>
+                        <th>Percentage</th>
+                        <th>Change (MoM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in storage_by_type %}
+                    <tr>
+                        <td><strong>{{ type.name }}</strong></td>
+                        <td>{{ type.count }}</td>
+                        <td>{{ type.size }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="flex: 1; background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: {{ type.percentage }}%; background: var(--primary-color); height: 100%;"></div>
+                                </div>
+                                <span>{{ type.percentage }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if type.change > 0 %}
+                            <span style="color: var(--success-color);">+{{ type.change }}%</span>
+                            {% elif type.change < 0 %}
+                            <span style="color: var(--danger-color);">{{ type.change }}%</span>
+                            {% else %}
+                            <span style="color: var(--secondary-color);">0%</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Backup Health -->
+        <div class="section">
+            <h2>🛡️ Backup Health Status</h2>
+            <div class="backup-status">
+                <div class="backup-item">
+                    <div class="backup-icon">💻</div>
+                    <div class="backup-info">
+                        <strong>Primary Library</strong>
+                        <span>{{ primary_status_detail }}</span>
+                    </div>
+                    <div class="backup-status-indicator {{ primary_status_class }}"></div>
+                </div>
+                <div class="backup-item">
+                    <div class="backup-icon">💾</div>
+                    <div class="backup-info">
+                        <strong>Local Backup</strong>
+                        <span>Last sync: {{ local_backup_last }}</span>
+                    </div>
+                    <div class="backup-status-indicator {{ local_backup_status_class }}"></div>
+                </div>
+                <div class="backup-item">
+                    <div class="backup-icon">☁️</div>
+                    <div class="backup-info">
+                        <strong>Cloud Backup</strong>
+                        <span>Last sync: {{ cloud_backup_last }}</span>
+                    </div>
+                    <div class="backup-status-indicator {{ cloud_backup_status_class }}"></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 1rem;">Integrity Audit Results</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Audit Date</th>
+                        <th>Sample Size</th>
+                        <th>Verified</th>
+                        <th>Failed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for audit in integrity_audits %}
+                    <tr>
+                        <td>{{ audit.date }}</td>
+                        <td>{{ audit.sample_size }} files</td>
+                        <td style="color: var(--success-color);">{{ audit.verified }}</td>
+                        <td style="color: var(--danger-color);">{{ audit.failed }}</td>
+                        <td>
+                            {% if audit.failed == 0 %}
+                            <span class="badge" style="background: #dcfce7; color: var(--success-color); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">✅ Pass</span>
+                            {% else %}
+                            <span class="badge" style="background: #fee2e2; color: var(--danger-color); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">❌ Fail</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Warnings/Alerts -->
+        {% if warnings %}
+        <div class="section">
+            <h2>⚠️ Warnings & Alerts</h2>
+            <ul class="warnings-list">
+                {% for warning in warnings %}
+                <li class="{{ warning.severity }}">
+                    <span style="font-size: 1.25rem;">{{ warning.icon }}</span>
+                    <div>
+                        <strong>{{ warning.title }}</strong>
+                        <p>{{ warning.message }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>📈 Asset Growth Trend (Last 6 Months)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>📊 Storage Usage Trend (Last 6 Months)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="storageChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Log Summary -->
+        <div class="section">
+            <h2>📋 Activity Log Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Count</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Drive Ingests</strong></td>
+                        <td>{{ activity.drives_ingested }}</td>
+                        <td>{{ activity.total_files_transferred }} files transferred</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Duplicates Removed</strong></td>
+                        <td>{{ activity.duplicates_removed }}</td>
+                        <td>{{ activity.space_recovered }} recovered</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Catalog Updates</strong></td>
+                        <td>{{ activity.catalog_updates }}</td>
+                        <td>Lightroom imports and syncs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backup Syncs</strong></td>
+                        <td>{{ activity.backup_syncs }}</td>
+                        <td>{{ activity.backup_failures }} failures</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reports Generated</strong></td>
+                        <td>{{ activity.reports_generated }}</td>
+                        <td>Per-drive and monthly reports</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Upcoming Tasks -->
+        <div class="section">
+            <h2>📅 Upcoming Tasks</h2>
+            <ul class="tasks-list">
+                {% for task in upcoming_tasks %}
+                <li>
+                    <input type="checkbox" id="task-{{ loop.index }}">
+                    <label for="task-{{ loop.index }}">{{ task.description }}</label>
+                    <span class="task-date">{{ task.date }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>MediaAuditOrganizer</strong> v1.0</p>
+            <p>Report generated: {{ generated_at }}</p>
+            <p>Next report: {{ next_report_date }}</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Growth Trend Chart
+        const growthCtx = document.getElementById('growthChart').getContext('2d');
+        new Chart(growthCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for month in growth_data %}'{{ month.label }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Total Assets',
+                    data: [{% for month in growth_data %}{{ month.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // Storage Usage Chart
+        const storageCtx = document.getElementById('storageChart').getContext('2d');
+        new Chart(storageCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for month in storage_data %}'{{ month.label }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Storage Used (GB)',
+                    data: [{% for month in storage_data %}{{ month.size_gb }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: '#7c3aed',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

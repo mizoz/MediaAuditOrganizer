@@ -1,0 +1,23 @@
+# MediaAuditOrganizer - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core dependencies (all open source, no API keys required)
+
+# Report generation
+jinja2>=3.1.0
+weasyprint>=60.0
+
+# Image processing for perceptual hashing
+Pillow>=10.0.0
+imagehash>=4.3.0
+
+# Optional: Enhanced EXIF support (fallback to exiftool CLI)
+# pyexiv2>=2.13.0
+
+# Optional: Progress bars
+# tqdm>=4.65.0
+
+# System dependencies (install via package manager):
+# - exiftool (brew install exiftool / apt install libimage-exiftool-perl)
+# - ffmpeg/ffprobe (brew install ffmpeg / apt install ffmpeg)
+# - SQLite3 (usually pre-installed with Python)

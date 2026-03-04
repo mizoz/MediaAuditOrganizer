@@ -1,0 +1,274 @@
+# /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/configs/settings.yaml
+# MediaAuditOrganizer Configuration File
+# Generated: 2026-03-03 20:21 MST
+# Status: PRODUCTION READY
+
+# =============================================================================
+# GENERAL SETTINGS
+# =============================================================================
+general:
+  version: "1.0.0"
+  workspace_root: "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer"
+  database_path: "06_METADATA/media_audit.db"
+  log_level: "INFO"
+  dry_run: false
+
+# =============================================================================
+# FILE ORGANIZATION
+# =============================================================================
+organization:
+  photos_root: "01_PHOTOS"
+  videos_root: "02_VIDEOS"
+  projects_root: "03_PROJECTS"
+  catalogs_root: "04_CATALOGS"
+  backups_root: "05_BACKUPS"
+  incoming_root: "00_INCOMING"
+  pending_review_subdir: "pending_review"
+  
+  photo_naming_pattern: "{date}_{time}_{camera}_{sequence}.{ext}"
+  photo_date_format: "%Y%m%d"
+  photo_time_format: "%H%M%S"
+  photo_sequence_digits: 3
+  
+  video_naming_pattern: "{date}_{time}_{device}_{res}_{fps}_{sequence}.{ext}"
+  video_resolution_format: "{width}x{height}"
+  
+  unknown_date_folder: "UNKNOWN_DATE"
+  screenshots_folder: "SCREENSHOTS"
+  edited_suffix: "_E"
+  raw_plus_jpg_pairs: true
+  
+  on_name_conflict: "append_hash"
+  hash_conflict_length: 8
+
+# =============================================================================
+# METADATA EXTRACTION
+# =============================================================================
+metadata:
+  exiftool_path: "exiftool"
+  exiftool_timeout: 30
+  exiftool_batch_size: 100
+  
+  ffprobe_path: "ffprobe"
+  ffprobe_timeout: 60
+  
+  photo_fields:
+    - "DateTimeOriginal"
+    - "Make"
+    - "Model"
+    - "LensModel"
+    - "ISO"
+    - "ShutterSpeedValue"
+    - "ApertureValue"
+    - "FocalLength"
+    - "GPSLatitude"
+    - "GPSLongitude"
+  
+  video_fields:
+    - "duration"
+    - "codec_name"
+    - "width"
+    - "height"
+    - "r_frame_rate"
+    - "tags/creation_time"
+  
+  assume_timezone: "America/Edmonton"
+  flag_timezone_ambiguity: true
+  timezone_drift_threshold_hours: 2
+
+# =============================================================================
+# DUPLICATE DETECTION
+# =============================================================================
+duplicates:
+  exact_detection_tool: "rdfind"
+  rdfind_make_hardlinks: false
+  rdfind_dry_run: true
+  
+  near_duplicate_tool: "dupeGuru"
+  near_duplicate_similarity_threshold: 0.85
+  near_duplicate_auto_delete: false
+  
+  keep_strategy: "keep_oldest"
+  archive_duplicates: true
+  archive_path: "05_BACKUPS/duplicates"
+  archive_retention_days: 30
+
+# =============================================================================
+# TRANSFER SETTINGS
+# =============================================================================
+transfer:
+  rclone_path: "rclone"
+  rclone_transfers: 8
+  rclone_checkers: 16
+  rclone_checksum: true
+  rclone_retries: 3
+  rclone_timeout: "5m"
+  
+  verify_after_transfer: true
+  verify_on_failure_action: "retransfer"
+  
+  log_all_transfers: true
+  log_path: "07_LOGS/transfers"
+  log_format: "csv"
+  
+  require_user_approval: true
+  approval_method: "cli"
+  max_transfer_size_gb: 500
+
+# =============================================================================
+# BACKUP SETTINGS
+# =============================================================================
+backup:
+  local_enabled: true
+  local_remote_name: "local_backup"
+  local_path: "/mnt/backup_drive/05_BACKUPS/"
+  local_schedule: "daily"
+  local_time: "02:00"
+  
+  cloud_enabled: true
+  cloud_remote_name: "myr2"
+  cloud_bucket: "media-backup-az"
+  cloud_provider: "r2"
+  cloud_schedule: "weekly"
+  cloud_day: "Sunday"
+  cloud_time: "04:00"
+  
+  bandwidth_limit_enabled: true
+  bandwidth_limit_business_hours: "500K"
+  bandwidth_limit_overnight: "0"
+  business_hours_start: "08:00"
+  business_hours_end: "18:00"
+  
+  phased_upload_enabled: true
+  phase1_days: 365
+  phase2_years: 3
+  phase3_older: true
+  
+  verify_backup_hashes: true
+  monthly_integrity_audit: true
+  integrity_audit_sample_pct: 5
+  integrity_audit_min_files: 100
+  
+  retention_daily_days: 7
+  retention_weekly_weeks: 4
+  retention_monthly_months: 12
+  retention_cloud_versions: 30
+  
+  alert_on_failure: true
+  alert_on_degradation: true
+  alert_email: "zalabany3@gmail.com"
+
+# =============================================================================
+# LIGHTROOM INTEGRATION
+# =============================================================================
+lightroom:
+  enabled: true
+  master_catalog: "~/Lightroom/Master_Catalog.lrcat"
+  project_catalogs_dir: "~/Lightroom/Project_Catalogs"
+  archive_catalogs_dir: "~/Lightroom/Archive_Catalogs"
+  
+  extract_metadata_on_import: true
+  export_metadata_path: "06_METADATA/catalogs_parsed"
+  
+  update_paths_before_move: true
+  backup_catalog_before_changes: true
+  catalog_backup_path: "04_CATALOGS/Archive_Catalogs"
+  
+  auto_import_enabled: false
+  auto_import_watched_folder: "00_INCOMING/pending_review"
+  auto_import_destination: "01_PHOTOS/YYYY/YYYY-MM_EventName"
+  
+  monthly_folder_sync: true
+  sync_missing_files: true
+  sync_orphaned_files: true
+
+# =============================================================================
+# REPORTING
+# =============================================================================
+reporting:
+  generate_html: true
+  generate_pdf: true
+  generate_csv: true
+  
+  per_drive_path: "08_REPORTS/per_drive"
+  monthly_path: "08_REPORTS/monthly_summaries"
+  reconciliation_path: "08_REPORTS/reconciliation"
+  
+  template_path: "templates/reports"
+  css_path: "templates/reports/css"
+  
+  per_drive_on_audit: true
+  monthly_on_first: true
+  monthly_time: "09:00"
+  
+  email_reports: true
+  email_address: "zalabany3@gmail.com"
+  email_subject_prefix: "[MediaAudit]"
+  
+  include_charts: true
+  include_file_lists: false
+  include_duplicate_details: true
+  include_backup_status: true
+
+# =============================================================================
+# AUTOMATION
+# =============================================================================
+automation:
+  drive_detection_enabled: true
+  drive_detection_method: "udev"
+  auto_audit_on_mount: false
+  notify_on_mount: true
+  
+  notifications_enabled: true
+  desktop_notifications: true
+  email_notifications: true
+  email_address: "zalabany3@gmail.com"
+  notify_on:
+    - audit_complete
+    - transfer_complete
+    - backup_failure
+    - integrity_audit_complete
+    - monthly_report_ready
+  
+  schedules:
+    nightly_backup: "0 2 * * *"
+    weekly_cloud_sync: "0 4 * * 0"
+    monthly_integrity: "0 8 1 * *"
+    monthly_report: "0 9 1 * *"
+
+# =============================================================================
+# DATABASE
+# =============================================================================
+database:
+  type: "sqlite"
+  sqlite_path: "06_METADATA/media_audit.db"
+  sqlite_journal_mode: "WAL"
+  sqlite_cache_size: -64000
+  
+  postgresql_host: "localhost"
+  postgresql_port: 5432
+  postgresql_database: "media_audit"
+  postgresql_user: "media_audit_user"
+  postgresql_password_env: "MEDIA_AUDIT_DB_PASSWORD"
+  
+  migrate_to_postgresql_at_assets: 150000
+  migrate_to_postgresql_at_size_gb: 2
+
+# =============================================================================
+# PERFORMANCE
+# =============================================================================
+performance:
+  metadata_extraction_workers: 4
+  duplicate_detection_workers: 2
+  transfer_workers: 8
+  
+  enable_query_cache: true
+  query_cache_max_size: 1000
+  enable_hash_cache: true
+  
+  database_insert_batch_size: 500
+  report_generation_batch_size: 1000
+  
+  audit_timeout_minutes: 60
+  transfer_timeout_hours: 12
+  backup_timeout_hours: 6

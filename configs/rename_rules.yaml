@@ -1,0 +1,353 @@
+# MediaAuditOrganizer — File Rename Rules Configuration
+# Generated: 2026-03-03
+# Defines naming patterns for different file types with examples
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GLOBAL SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Sequence number settings
+sequence:
+  start_at: 1
+  padding: 4  # 0001, 0002, 0003, etc.
+  reset_on: date_change  # Options: date_change, camera_change, folder_change, never
+
+# Conflict handling when target filename already exists
+conflict_handling:
+  strategy: append_hash  # Options: append_hash, increment_sequence, skip, overwrite
+  hash_length: 8  # Number of characters from SHA256 hash to append
+  
+# Date formatting
+date_format:
+  separator: "-"  # Character between date components
+  order: "YYYY-MM-DD"  # Use YYYY-MM-DD for ISO 8601 compatibility
+  use_exif_date: true  # Prefer EXIF DateTimeOriginal over file modification date
+  fallback_to_file_date: true  # Use file date if EXIF date missing
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHOTO RENAMING (JPG, PNG, HEIC, etc.)
+# ─────────────────────────────────────────────────────────────────────────────
+
+photos:
+  enabled: true
+  
+  # Pattern components (in order)
+  pattern: "{YYYY}-{MM}-{DD}_{HH}-{MM}-{SS}_{camera_model}_{sequence}"
+  
+  # Example transformation
+  example:
+    input: "IMG_1234.JPG"
+    input_exif:
+      DateTimeOriginal: "2025:03:15 14:30:22"
+      Model: "Nikon D850"
+    output: "2025-03-15_14-30-22_D850_0001.JPG"
+  
+  # Alternative patterns for specific scenarios
+  alternatives:
+    # For events with known names
+    with_event_name: "{YYYY}-{MM}-{DD}_{event_name}_{camera_model}_{sequence}"
+    # Example: 2025-03-15_JohnsonWedding_D850_0001.JPG
+    
+    # Simplified (no time)
+    date_only: "{YYYY}-{MM}-{DD}_{camera_model}_{sequence}"
+    # Example: 2025-03-15_D850_0001.JPG
+    
+    # With photographer name
+    with_photographer: "{YYYY}-{MM}-{DD}_{photographer}_{camera_model}_{sequence}"
+    # Example: 2025-03-15_AZ_D850_0001.JPG
+  
+  # Camera model normalization (shorten long model names)
+  camera_model_map:
+    "Nikon D850": "D850"
+    "Canon EOS R5": "R5"
+    "Sony ILCE-7M3": "A7III"
+    "Sony ILCE-7RM4": "A7RIV"
+    "Fujifilm X-T4": "XT4"
+    "DJI Mavic 3": "Mavic3"
+    "GoPro HERO11 Black": "GoPro11"
+    "Apple iPhone 14 Pro": "iPhone14Pro"
+    "Apple iPhone 15 Pro Max": "iPhone15ProMax"
+  
+  # Handle missing EXIF date
+  no_exif_date:
+    prefix: "NODATE"
+    use_import_date: true
+    pattern: "{prefix}_{YYYY}-{MM}-{DD}_{original_name}_{hash8}"
+    # Example: NODATE_2026-03-03_IMG_1234_a3f5c8d2.JPG
+
+# ─────────────────────────────────────────────────────────────────────────────
+# VIDEO RENAMING (MP4, MOV, MKV, etc.)
+# ─────────────────────────────────────────────────────────────────────────────
+
+videos:
+  enabled: true
+  
+  # Pattern includes resolution and frame rate from video metadata
+  pattern: "{YYYY}-{MM}-{DD}_{HH}-{MM}-{SS}_{device_type}_{resolution}_{fps}_{sequence}"
+  
+  # Example transformation
+  example:
+    input: "GOPR0234.MP4"
+    input_metadata:
+      CreationTime: "2025-03-15T14:30:00"
+      Make: "GoPro"
+      Model: "HERO11 Black"
+      Width: 3840
+      Height: 2160
+      FrameRate: 60
+    output: "2025-03-15_14-30-00_GoPro11_4K_60fps_0001.MP4"
+  
+  # Resolution shorthand
+  resolution_map:
+    "1920x1080": "1080"
+    "2560x1440": "1440"
+    "3840x2160": "4K"
+    "5120x2880": "5K"
+    "7680x4320": "8K"
+  
+  # Device type shorthand
+  device_type_map:
+    "DJI Mavic 3": "Drone"
+    "GoPro HERO11 Black": "ActionCam"
+    "Nikon D850": "Camera"
+    "Canon EOS R5": "Camera"
+    "Sony ILCE-7M3": "Camera"
+  
+  # Alternative patterns
+  alternatives:
+    # Simplified (no resolution/fps)
+    simple: "{YYYY}-{MM}-{DD}_{device_type}_{sequence}"
+    # Example: 2025-03-15_Drone_0001.MP4
+    
+    # With location (if GPS available)
+    with_location: "{YYYY}-{MM}-{DD}_{location}_{device_type}_{sequence}"
+    # Example: 2025-03-15_Banff_Drone_0001.MP4
+  
+  # Proxy file naming (for transcoded editing proxies)
+  proxy_suffix: "_proxy"
+  # Example: 2025-03-15_14-30-00_D850_4K_30fps_0001_proxy.MP4
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RAW FILE RENAMING (CR2, CR3, ARW, NEF, DNG, etc.)
+# ─────────────────────────────────────────────────────────────────────────────
+
+RAW_files:
+  enabled: true
+  
+  # RAW files should match their JPG pair names exactly (only extension differs)
+  pattern: "{YYYY}-{MM}-{DD}_{HH}-{MM}-{SS}_{camera_model}_{sequence}"
+  
+  # Example transformation (paired with JPG)
+  example:
+    input: "DSC_1234.NEF"
+    input_exif:
+      DateTimeOriginal: "2025:03:15 14:30:22"
+      Model: "Nikon D850"
+    paired_jpg: "IMG_5678.JPG"  # Both get same base name
+    output: "2025-03-15_14-30-22_D850_0001.NEF"
+    paired_jpg_output: "2025-03-15_14-30-22_D850_0001.JPG"
+  
+  # RAW+JPG pair handling
+  pair_handling:
+    # When RAW and JPG exist with similar timestamps, treat as pair
+    enabled: true
+    time_tolerance_seconds: 5  # Max time difference to consider as pair
+    same_sequence_number: true  # Assign same sequence number to both
+    keep_both: true  # Keep both RAW and JPG (don't delete one)
+  
+  # RAW-specific suffixes
+  suffixes:
+    edited: "_E"      # For edited/retouched versions
+    # Example: 2025-03-15_14-30-22_D850_0001_E.NEF (edited RAW)
+    
+    hdr: "_HDR"       # For HDR merges
+    panorama: "_PANO" # For panoramas
+    focus_stack: "_FS" # For focus stacks
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DOCUMENT RENAMING (PDF, DOCX, scans, etc.)
+# ─────────────────────────────────────────────────────────────────────────────
+
+documents:
+  enabled: true
+  
+  # Pattern for scanned documents and PDFs
+  pattern: "{YYYY}-{MM}-{DD}_{doc_type}_{original_name}_{hash8}"
+  
+  # Example transformation
+  example:
+    input: "scan0001.pdf"
+    input_metadata:
+      CreateDate: "2025-03-15"
+      doc_type: "Invoice"  # Extracted from OCR or filename
+    output: "2025-03-15_Invoice_scan0001_b7e2f1a9.pdf"
+  
+  # Document type detection (from OCR keywords or filename patterns)
+  doc_type_keywords:
+    invoice: ["invoice", "receipt", "payment", "bill"]
+    contract: ["contract", "agreement", "terms"]
+    id_document: ["passport", "license", "id", "card"]
+    medical: ["medical", "prescription", "lab", "report"]
+    tax: ["tax", "return", "1099", "w2", "t4"]
+    insurance: ["insurance", "policy", "claim"]
+    legal: ["legal", "court", "filing", "petition"]
+  
+  # Fallback if no type detected
+  default_doc_type: "Document"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# UNKNOWN / UNRECOGNIZED FILE TYPES
+# ─────────────────────────────────────────────────────────────────────────────
+
+unknown_types:
+  enabled: true
+  
+  # Fallback pattern for files that don't match any category
+  pattern: "UNKNOWN_{YYYY}-{MM}-{DD}_{original_name}_{hash8}.{ext}"
+  
+  # Example transformation
+  example:
+    input: "random_file.xyz"
+    input_metadata:
+      ModifyDate: "2025-03-15"
+    output: "UNKNOWN_2025-03-15_random_file_xyz_c9d1e3f5.xyz"
+  
+  # Move unknown types to review folder
+  move_to_review: true
+  review_folder: ./00_INCOMING/pending_review/unknown_types
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SCREENSHOTS AND PHONE PHOTOS
+# ─────────────────────────────────────────────────────────────────────────────
+
+screenshots:
+  enabled: true
+  
+  # Pattern for screenshots (typically no EXIF, use file date)
+  pattern: "SCREEN_{YYYY}-{MM}-{DD}_{HH}-{MM}-{SS}_{device}_{sequence}"
+  
+  # Example transformation
+  example:
+    input: "Screenshot 2025-03-15 at 14.30.22.png"
+    input_metadata:
+      ModifyDate: "2025-03-15 14:30:22"
+      device: "Desktop"  # Or extract from filename
+    output: "SCREEN_2025-03-15_14-30-22_Desktop_0001.png"
+  
+  # Device detection from filename patterns
+  device_patterns:
+    "Screenshot.*iPhone": "iPhone"
+    "Screenshot.*iPad": "iPad"
+    "Screenshot.*Mac": "Mac"
+    "Screenshot.*Windows": "Windows"
+    "Screenshot.*Android": "Android"
+  
+  # Default device if not detected
+  default_device: "Unknown"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BURST / CONTINUOUS SHOTS
+# ─────────────────────────────────────────────────────────────────────────────
+
+burst_shots:
+  enabled: true
+  
+  # Detect burst shots by rapid sequence (same second, multiple files)
+  detection:
+    time_window_seconds: 1
+    min_burst_count: 3  # Minimum files to consider as burst
+  
+  # Pattern for burst shots (include burst index)
+  pattern: "{YYYY}-{MM}-{DD}_{HH}-{MM}-{SS}_{camera_model}_burst{burst_index}_{sequence}"
+  
+  # Example transformation
+  example:
+    input_files: 
+      - "IMG_1001.CR2"
+      - "IMG_1002.CR2"
+      - "IMG_1003.CR2"
+    all_same_second: true
+    output:
+      - "2025-03-15_14-30-22_D850_burst1_0001.CR2"
+      - "2025-03-15_14-30-22_D850_burst1_0002.CR2"
+      - "2025-03-15_14-30-22_D850_burst1_0003.CR2"
+  
+  # Keep only best shot from burst (optional)
+  keep_best_only: false
+  best_criteria: sharpest  # Options: sharpest, best_exposure, first, last
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SPECIAL CASES AND OVERRIDES
+# ─────────────────────────────────────────────────────────────────────────────
+
+special_cases:
+  # Files with specific keywords in path or name
+  overrides:
+    # Wedding photos - include couple names
+    - condition:
+        path_contains: ["wedding", "marriage"]
+      pattern: "{YYYY}-{MM}-{DD}_{couple_names}_{camera_model}_{sequence}"
+      example: "2025-03-15_JohnsonWedding_D850_0001.JPG"
+    
+    # Real estate photos - include property address
+    - condition:
+        path_contains: ["real_estate", "property", "listing"]
+      pattern: "{YYYY}-{MM}-{DD}_{property_address}_{sequence}"
+      example: "2025-03-15_123MainSt_0001.JPG"
+    
+    # Product photography - include SKU or product name
+    - condition:
+        path_contains: ["product", "ecommerce", "shop"]
+      pattern: "{YYYY}-{MM}-{DD}_{product_sku}_{sequence}"
+      example: "2025-03-15_PROD-12345_0001.JPG"
+    
+    # Travel photos - include location
+    - condition:
+        gps_available: true
+      pattern: "{YYYY}-{MM}-{DD}_{location}_{camera_model}_{sequence}"
+      example: "2025-03-15_Banff_D850_0001.JPG"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CHARACTER NORMALIZATION
+# ─────────────────────────────────────────────────────────────────────────────
+
+character_normalization:
+  # Replace problematic characters in filenames
+  replacements:
+    " ": "_"           # Spaces to underscores
+    "/": "-"           # Forward slashes (shouldn't occur, but safe)
+    "\\": "-"          # Backslashes
+    ":": "-"           # Colons (problematic on Windows)
+    "*": "-"           # Asterisks
+    "?": "-"           # Question marks
+    '"': "-"           # Quotes
+    "<": "-"           # Less than
+    ">": "-"           # Greater than
+    "|": "-"           # Pipes
+  
+  # Convert to lowercase (optional - set to false to preserve case)
+  lowercase: false
+  
+  # Remove accents/diacritics (é → e, ñ → n, etc.)
+  remove_accents: true
+  
+  # Maximum filename length (adjust for filesystem compatibility)
+  # Windows: 260 chars, Mac/Linux: 255 chars
+  max_length: 200
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DRY RUN AND PREVIEW
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Always preview renames before applying
+preview_before_apply: true
+
+# Generate preview report showing:
+# - Original filename
+# - New filename
+# - Reason for change (which rule applied)
+# - Conflicts detected
+preview_report_format: html  # Options: html, csv, markdown
+
+# Require manual approval for batches over N files
+approval_threshold: 100  # Set to 0 to always require approval
