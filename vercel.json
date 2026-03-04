@@ -4,9 +4,8 @@
   "outputDirectory": "gui/dist",
   "installCommand": "echo 'install handled in buildCommand'",
   "framework": null,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/dashboard", "dest": "/index.html" },
-    { "src": "/dashboard/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/dashboard/:path*", "destination": "/index.html" }
   ]
 }
