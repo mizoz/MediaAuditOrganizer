@@ -1,0 +1,31 @@
+{
+  "detection_timestamp": "2026-03-04T00:12:00-07:00",
+  "gpu_detected": true,
+  "gpu_vendor": "NVIDIA",
+  "gpu_model": "NVIDIA GeForce GTX 960",
+  "gpu_memory_mb": 4096,
+  "driver_version": "580.119.02",
+  "available_encoders": [
+    "libx264",
+    "libx264rgb",
+    "libx265",
+    "h264_v4l2m2m",
+    "hevc_v4l2m2m",
+    "h263_v4l2m2m",
+    "mpeg4_v4l2m2m"
+  ],
+  "hardware_encoders_detected": [],
+  "nvenc_available": false,
+  "amf_available": false,
+  "videotoolbox_available": false,
+  "vaapi_available": false,
+  "qsv_available": false,
+  "recommended_encoder": null,
+  "fallback_available": true,
+  "fallback_encoder": "libx264",
+  "fallback_forbidden": true,
+  "status": "GPU_HARDWARE_PRESENT_BUT_FFMPEG_LACKS_NVENC",
+  "action_required": "FFmpeg must be recompiled with --enable-nonfree --enable-nvenc to use GPU acceleration",
+  "enforcement_status": "BLOCKED",
+  "enforcement_reason": "NVIDIA GPU detected (GTX 960) but ffmpeg was not compiled with NVENC encoder support. Software encoding (libx264) is FORBIDDEN per SA-22 mandate."
+}

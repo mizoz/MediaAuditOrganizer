@@ -1,0 +1,270 @@
+# MediaAuditOrganizer Backup Configuration
+# Generated: 2026-03-04
+# Version: 1.0.0
+# Strategy: 3-2-1 (3 copies, 2 media types, 1 offsite)
+
+# =============================================================================
+# BACKUP STRATEGY
+# =============================================================================
+# 3 Copies:
+#   1. Primary: /home/az/AXIOMATIC/ (workstation NVMe)
+#   2. Local Backup: External HDD (when connected)
+#   3. Cloud Backup: Cloudflare R2 or similar (offsite)
+#
+# 2 Media Types:
+#   1. NVMe SSD (primary)
+#   2. HDD (local backup) + Cloud (offsite)
+#
+# 1 Offsite:
+#   1. Cloud storage (encrypted)
+
+# =============================================================================
+# LOCAL BACKUP CONFIGURATION
+# =============================================================================
+local_backup:
+  enabled: true
+  
+  # Primary backup destination (external drive when connected)
+  destinations:
+    - name: "external_hdd"
+      path: "/mnt/backup_drive"  # Update when drive connected
+      type: "hdd"
+      capacity_tb: 4
+      auto_mount: false
+      
+    - name: "nas_backup"
+      path: "/mnt/nas/backups"  # Optional NAS location
+      type: "network"
+      auto_mount: false
+  
+  # Backup schedule
+  schedule:
+    daily:
+      enabled: true
+      time: "02:00"
+      type: "sync"  # rclone sync (mirror)
+      
+    weekly:
+      enabled: true
+      day: "sunday"
+      time: "03:00"
+      type: "copy"  # rclone copy (versioned)
+      destination_suffix: "/weekly"
+      
+    monthly:
+      enabled: true
+      day: 1
+      time: "04:00"
+      type: "copy"
+      destination_suffix: "/monthly"
+      retention_months: 12
+  
+  # Verification settings
+  verification:
+    enabled: true
+    method: "checksum"  # md5, sha1, sha256
+    sample_rate: 1.0  # Verify 100% of files
+    alert_on_mismatch: true
+  
+  # Retention policy
+  retention:
+    daily: 7      # Keep 7 daily backups
+    weekly: 4     # Keep 4 weekly backups
+    monthly: 12   # Keep 12 monthly backups
+
+# =============================================================================
+# CLOUD BACKUP CONFIGURATION
+# =============================================================================
+cloud_backup:
+  enabled: false  # Enable after rclone config setup
+  
+  # Recommended: Cloudflare R2 (no egress fees)
+  provider: "rclone"
+  remote_name: "cloudflare_r2"  # Set up with: rclone config
+  
+  # Alternative providers (uncomment and configure as needed)
+  # provider: "aws_s3"
+  # remote_name: "aws_backup"
+  
+  # provider: "backblaze_b2"
+  # remote_name: "backblaze_backup"
+  
+  # Bucket/container settings
+  bucket: "media-audit-backup"
+  region: "auto"  # R2 uses "auto"
+  
+  # Encryption (client-side, before upload)
+  encryption:
+    enabled: true
+    type: "crypt"  # rclone crypt remote
+    password_env: "RCLONE_CRYPT_PASSWORD"
+    filename_encryption: "standard"
+    directory_name_encryption: true
+  
+  # Upload schedule
+  schedule:
+    weekly:
+      enabled: true
+      day: "sunday"
+      time: "04:00"
+      
+    monthly:
+      enabled: true
+      day: 1
+      time: "05:00"
+      versioning: true
+  
+  # Bandwidth limits (avoid saturating connection)
+  bandwidth:
+    upload_limit_mbps: 10  # Limit upload speed
+    transfer_window:
+      start: "22:00"
+      end: "06:00"
+  
+  # Cost management
+  cost_management:
+    monthly_budget_usd: 30  # Alert if exceeded
+    storage_tier: "standard"  # or "coldline" for archival
+  
+  # Initial upload strategy (for large libraries)
+  initial_upload:
+    strategy: "phased"
+    phases:
+      - name: "critical_recent"
+        filter: "modified_within_365_days"
+        priority: 1
+      - name: "working_files"
+        filter: "modified_within_1095_days"
+        priority: 2
+      - name: "archive"
+        filter: "all_remaining"
+        priority: 3
+
+# =============================================================================
+# BACKUP SOURCES
+# =============================================================================
+sources:
+  primary:
+    path: "/home/az/AXIOMATIC/"
+    include:
+      - "**/*.arw"
+      - "**/*.cr2"
+      - "**/*.nef"
+      - "**/*.raf"
+      - "**/*.jpg"
+      - "**/*.jpeg"
+      - "**/*.png"
+      - "**/*.mp4"
+      - "**/*.mov"
+      - "**/*.mkv"
+      - "**/*.xmp"  # Sidecar files
+      - "**/*.lrcat"  # Lightroom catalogs
+      - "**/*.lrdata"
+    exclude:
+      - "**/.*"  # Hidden files
+      - "**/__pycache__/"
+      - "**/node_modules/"
+      - "**/.git/"
+      - "**/*.tmp"
+      - "**/*.bak"
+  
+  metadata:
+    path: "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/06_METADATA/"
+    include:
+      - "**/*.db"
+      - "**/*.json"
+      - "**/*.csv"
+    priority: "high"  # Backup first
+  
+  configs:
+    path: "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/configs/"
+    include:
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/*.toml"
+    priority: "high"
+
+# =============================================================================
+# VERIFICATION & TESTING
+# =============================================================================
+verification:
+  # Post-backup verification
+  post_backup:
+    enabled: true
+    verify_count: true  # Check file counts match
+    verify_size: true   # Check total size matches
+    verify_checksum: true  # Verify sample checksums
+  
+  # Monthly audit
+  monthly_audit:
+    enabled: true
+    sample_percentage: 5  # Verify 5% of files
+    download_and_verify: true
+  
+  # Alerts
+  alerts:
+    enabled: true
+    on_failure: true
+    on_mismatch: true
+    on_missing_backup: true
+    channel: "telegram"  # or "email", "slack"
+
+# =============================================================================
+# RECOVERY PROCEDURES
+# =============================================================================
+recovery:
+  # Test recovery quarterly
+  test_recovery:
+    enabled: true
+    frequency: "quarterly"
+    test_file_count: 10
+  
+  # Recovery documentation
+  documentation:
+    location: "08_REPORTS/recovery_procedures.md"
+    include_step_by_step: true
+    include_contact_info: true
+
+# =============================================================================
+# MONITORING & REPORTING
+# =============================================================================
+monitoring:
+  # Backup health report
+  reports:
+    weekly:
+      enabled: true
+      format: "pdf"
+      destination: "08_REPORTS/backup_health_weekly_{}.pdf"
+    
+    monthly:
+      enabled: true
+      format: "pdf"
+      destination: "08_REPORTS/backup_health_monthly_{}.pdf"
+  
+  # Metrics to track
+  metrics:
+    - "total_files_backed_up"
+    - "total_size_backed_up"
+    - "backup_duration"
+    - "verification_status"
+    - "storage_cost"
+
+# =============================================================================
+# RCLONE COMMAND EXAMPLES
+# =============================================================================
+# Setup:
+#   rclone config  # Create remote named "cloudflare_r2"
+#   rclone config create cloudflare_r2 s3 provider=Cloudflare access_key_id=XXX secret_access_key=XXX region=auto endpoint=https://XXX.r2.cloudflarestorage.com
+#
+# Test sync (dry-run):
+#   rclone sync /home/az/AXIOMATIC/ cloudflare_r2:media-audit-backup --dry-run -v
+#
+# Actual sync:
+#   rclone sync /home/az/AXIOMATIC/ cloudflare_r2:media-audit-backup -v --progress
+#
+# Verify:
+#   rclone check /home/az/AXIOMATIC/ cloudflare_r2:media-audit-backup
+#
+# Encrypted backup:
+#   rclone config create cloudflare_r2_crypt crypt remote=cloudflare_r2:encrypted filename_encryption=standard directory_name_encryption=true password=YOUR_PASSWORD
+#   rclone sync /home/az/AXIOMATIC/ cloudflare_r2_crypt: -v

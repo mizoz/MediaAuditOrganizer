@@ -1,0 +1,14 @@
+{
+  "identifier": "default",
+  "description": "Default capability for MediaAuditOrganizer",
+  "windows": ["main"],
+  "permissions": [
+    "shell:allow-execute",
+    "shell:allow-spawn",
+    "shell:allow-stdin-write",
+    "fs:allow-read",
+    "fs:allow-write",
+    "fs:allow-exists",
+    "process:default"
+  ]
+}

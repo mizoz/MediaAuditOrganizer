@@ -75,6 +75,15 @@ htmlcov/
 .dmypy.json
 dmypy.json
 
+# Rust / Tauri
+gui/src-tauri/target/
+**/target/
+*.rlib
+*.a
+
+# Node
+gui/node_modules/
+
 # KEEP THESE (code + config)
 !gui/
 !scripts/

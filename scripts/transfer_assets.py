@@ -332,9 +332,17 @@ def transfer_files_with_checkpoint(
         new_path = Path(op.get("new_path", ""))
         
         # Calculate actual paths (adjust for source/dest if needed)
-        # For rename operations, paths are already absolute
-        source_path = original_path
-        dest_path = new_path
+        # Use source/dest arguments to construct proper paths from manifest relative paths
+        # If original_path is absolute and starts with source, use it; otherwise prepend source
+        if original_path.is_absolute() and str(original_path).startswith(str(source)):
+            source_path = original_path
+        else:
+            source_path = source / original_path
+        
+        # CRITICAL FIX: Construct dest_path from dest argument, not from manifest's new_path
+        # The manifest's new_path may incorrectly point to source drive
+        # Extract filename from new_path and append to dest directory
+        dest_path = dest / new_path.name
         
         # Progress indicator
         progress = i + 1

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-03-03T22:34:20-07:00",
+  "python_deps": "MISSING: imagehash",
+  "rclone_remotes": "none",
+  "folders": {
+    "00_INCOMING": false,
+    "01_PHOTOS": false,
+    "02_VIDEOS": false,
+    "05_BACKUPS": false,
+    "06_METADATA": false,
+    "07_LOGS": false,
+    "08_REPORTS": false,
+    "configs": true,
+    "scripts": true,
+    "templates": true
+  },
+  "configs": {
+    "settings.yaml": true,
+    "rename_rules.yaml": true
+  },
+  "database": "missing",
+  "drive_accessible": false,
+  "drive_path": "/media/az/1-64gb",
+  "drive_usage": "N/A - drive not mounted",
+  "ready_for_audit": false,
+  "blocking_issues": [
+    "Python module 'imagehash' not installed",
+    "Rclone has no remotes configured",
+    "Missing required folders: 00_INCOMING, 01_PHOTOS, 02_VIDEOS, 05_BACKUPS, 06_METADATA, 07_LOGS, 08_REPORTS",
+    "Database file 06_METADATA/media_audit.db missing (folder does not exist)",
+    "Drive path /media/az/1-64gb/ not accessible (not mounted or does not exist)"
+  ]
+}

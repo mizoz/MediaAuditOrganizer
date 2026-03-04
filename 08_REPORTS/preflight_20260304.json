@@ -1,0 +1,21 @@
+{
+  "pass": true,
+  "available_gb": 369.82,
+  "required_gb": 8.32,
+  "required_base_gb": 5.55,
+  "margin_pct": 150.0,
+  "surplus_gb": 361.5,
+  "drive_info": {
+    "mount_point": "/",
+    "filesystem": "ext4",
+    "device": "/dev/nvme0n1p1",
+    "model": "KINGSTON SA2000M8500G",
+    "total_gb": 453.44,
+    "used_gb": 60.51,
+    "available_gb": 369.82,
+    "use_percent": 13.35,
+    "smart_status": "Unknown"
+  },
+  "timestamp": "2026-03-04T00:09:21.764870",
+  "target_path": "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer"
+}

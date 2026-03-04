@@ -1,0 +1,16 @@
+{
+  "checkpoint_id": "CP_OP_20260304_003103_0438",
+  "operation_id": "OP_20260304_003103_0438",
+  "created": "2026-03-04T00:31:03.128841",
+  "task_id": "TASK_20260304_003103_CHECKPOINT_SENTINEL_0003",
+  "original_path": "/media/az/drive64gb/DCIM/100MSDCF/DSC01564.ARW",
+  "new_path": "/media/az/drive64gb/DCIM/100MSDCF/2022-08-19_08-38-23_A7M4_0018.arw",
+  "status": "pending",
+  "can_rollback": true,
+  "rollback_path": null,
+  "metadata": {
+    "file_size": 0,
+    "original_filename": "DSC01564.ARW",
+    "new_filename": "2022-08-19_08-38-23_A7M4_0018.arw"
+  }
+}

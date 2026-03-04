@@ -1,0 +1,9 @@
+{
+  "task_id": "TASK_20260304_003103_CHECKPOINT_SENTINEL_0003",
+  "created": "2026-03-04T00:31:03.137105",
+  "total_checkpoints": 500,
+  "manifest_file": "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/06_METADATA/shadow_manifest_TASK_20260304_003103_CHECKPOINT_SENTINEL_0003.json",
+  "checkpoints_directory": "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/06_METADATA/checkpoints",
+  "status": "ready",
+  "rollback_enabled": true
+}

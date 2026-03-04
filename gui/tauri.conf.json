@@ -1,0 +1,119 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "MediaAuditOrganizer",
+  "version": "1.0.0",
+  "identifier": "com.mediamaudit.organizer",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "title": "MediaAuditOrganizer",
+        "width": 1600,
+        "height": 1000,
+        "minWidth": 1200,
+        "minHeight": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "center": true,
+        "theme": "Dark"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [
+      "../../scripts/*.py",
+      "../../.venv/**/*"
+    ],
+
+    "category": "DeveloperTool",
+    "shortDescription": "Media asset audit and organization tool",
+    "longDescription": "Professional media audit and organization system for photographers and videographers. Local-first processing with GPU acceleration.",
+    "linux": {
+      "deb": {
+        "depends": ["python3", "exiftool", "ffmpeg"]
+      },
+      "appimage": {
+        "bundleMediaFramework": true
+      }
+    },
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "plugins": {
+    "shell": {
+      "scope": [
+        {
+          "name": "python",
+          "cmd": "python3",
+          "args": true
+        },
+        {
+          "name": "audit-drive",
+          "cmd": "python3",
+          "args": true
+        },
+        {
+          "name": "deduplicate",
+          "cmd": "python3",
+          "args": true
+        },
+        {
+          "name": "transfer-assets",
+          "cmd": "python3",
+          "args": true
+        },
+        {
+          "name": "exiftool",
+          "cmd": "exiftool",
+          "args": true
+        },
+        {
+          "name": "ffmpeg",
+          "cmd": "ffmpeg",
+          "args": true
+        }
+      ]
+    },
+    "fs": {
+      "scope": [
+        "/media/**",
+        "/mnt/**",
+        "/Volumes/**",
+        "$HOME/Pictures/**",
+        "$HOME/Videos/**",
+        "$HOME/Documents/**"
+      ],
+      "requireLiteralLeadingDot": false
+    }
+  }
+}

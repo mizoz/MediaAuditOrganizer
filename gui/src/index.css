@@ -1,0 +1,379 @@
+/**
+ * MediaAuditOrganizer - Main Stylesheet
+ * Imports Tailwind CSS and design tokens
+ */
+
+@import './styles/design-tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== BASE STYLES ===== */
+
+@layer base {
+  * {
+    @apply border-slate-800;
+  }
+
+  html {
+    @apply bg-obsidian-900 text-slate-100;
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-obsidian-900 text-slate-100;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  #root {
+    @apply h-screen w-screen;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-slate-100;
+    line-height: var(--leading-tight);
+  }
+
+  h1 { @apply text-2xl; }
+  h2 { @apply text-xl; }
+  h3 { @apply text-lg; }
+  h4 { @apply text-base; }
+  h5 { @apply text-sm; }
+  h6 { @apply text-xs; }
+
+  p {
+    @apply text-slate-300;
+    line-height: var(--leading-snug);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+    @apply text-sm;
+  }
+
+  /* Links */
+  a {
+    @apply text-blue-400 hover:text-blue-300;
+    transition: color var(--transition-base);
+  }
+
+  /* Buttons - Base */
+  button {
+    @apply cursor-pointer;
+    font-family: var(--font-sans);
+  }
+
+  button:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Inputs */
+  input, textarea, select {
+    font-family: var(--font-sans);
+    @apply bg-slate-800 border-slate-700 text-slate-100;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  input::placeholder, textarea::placeholder {
+    @apply text-slate-500;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-cyber-lime-500 text-obsidian-950;
+  }
+}
+
+/* ===== COMPONENT STYLES ===== */
+
+@layer components {
+  /* Card */
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-lg;
+    @apply shadow-md;
+  }
+
+  .card-header {
+    @apply p-4 border-b border-slate-800;
+  }
+
+  .card-body {
+    @apply p-4;
+  }
+
+  .card-footer {
+    @apply p-4 border-t border-slate-800;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-500 text-white;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply transition-colors duration-150;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-700 hover:bg-slate-600 text-slate-100;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply transition-colors duration-150;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-500 text-white;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply transition-colors duration-150;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-slate-800 text-slate-300;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply transition-colors duration-150;
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply h-2 w-2 rounded-full;
+  }
+
+  .status-dot-idle {
+    @apply bg-status-idle;
+  }
+
+  .status-dot-processing {
+    @apply bg-status-processing animate-pulse;
+  }
+
+  .status-dot-success {
+    @apply bg-status-success;
+  }
+
+  .status-dot-error {
+    @apply bg-status-error;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    @apply h-2 bg-slate-800 rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full transition-all duration-300;
+  }
+
+  .progress-bar-fill-success {
+    @apply bg-status-success;
+  }
+
+  .progress-bar-fill-processing {
+    @apply bg-status-processing;
+  }
+
+  .progress-bar-fill-error {
+    @apply bg-status-error;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2 py-1 rounded text-xs font-medium;
+  }
+
+  .badge-blue {
+    @apply bg-blue-500/20 text-blue-400;
+  }
+
+  .badge-green {
+    @apply bg-green-500/20 text-green-400;
+  }
+
+  .badge-red {
+    @apply bg-red-500/20 text-red-400;
+  }
+
+  .badge-yellow {
+    @apply bg-yellow-500/20 text-yellow-400;
+  }
+
+  .badge-slate {
+    @apply bg-slate-700 text-slate-400;
+  }
+
+  /* Table */
+  .table-container {
+    @apply overflow-auto;
+  }
+
+  .table {
+    @apply w-full text-left;
+  }
+
+  .table-header {
+    @apply bg-slate-800/50 border-b border-slate-700;
+  }
+
+  .table-row {
+    @apply border-b border-slate-800 hover:bg-slate-800/30;
+    @apply transition-colors;
+  }
+
+  .table-cell {
+    @apply p-3 text-sm;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+    @apply flex items-center justify-center;
+    z-index: var(--z-modal-backdrop);
+  }
+
+  .modal-content {
+    @apply bg-slate-900 border border-slate-700 rounded-lg;
+    @apply max-w-2xl w-full mx-4 max-h-[90vh] overflow-auto;
+    @apply shadow-xl;
+    z-index: var(--z-modal);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply w-64 bg-slate-900 border-r border-slate-800;
+    @apply flex flex-col;
+  }
+
+  .sidebar-nav {
+    @apply flex-1 p-2;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm;
+    @apply text-slate-400 hover:bg-slate-800 hover:text-slate-200;
+    @apply transition-colors;
+  }
+
+  .sidebar-nav-item-active {
+    @apply bg-blue-600 text-white;
+  }
+
+  /* Top bar */
+  .top-bar {
+    @apply h-14 border-b border-slate-800;
+    @apply flex items-center justify-between px-6;
+    @apply bg-slate-900/50;
+  }
+
+  /* Workspace */
+  .workspace {
+    @apply flex-1 overflow-hidden;
+  }
+
+  .workspace-content {
+    @apply h-[calc(100vh-3.5rem)] overflow-auto;
+    @apply p-6;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+@layer utilities {
+  /* Font families */
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Text sizes */
+  .text-11 {
+    font-size: var(--text-xs);
+  }
+
+  .text-12 {
+    font-size: var(--text-sm);
+  }
+
+  .text-13 {
+    font-size: var(--text-base);
+  }
+
+  /* Spacing */
+  .space-prose > * + * {
+    margin-top: var(--space-4);
+  }
+
+  .space-compact > * + * {
+    margin-top: var(--space-2);
+  }
+
+  /* High density layout */
+  .density-high {
+    @apply text-sm;
+  }
+
+  .density-high .table-cell {
+    @apply py-1.5 px-2;
+  }
+
+  .density-high .card-body {
+    @apply p-3;
+  }
+
+  /* Animations */
+  .animate-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .animate-out {
+    animation: fade-out 0.2s ease-in;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Focus visible */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900;
+  }
+}

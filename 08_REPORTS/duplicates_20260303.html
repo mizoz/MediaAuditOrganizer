@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Detection Report - 2026-03-03</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 1400px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 12px; margin-bottom: 30px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .section { background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .section h2 { color: #667eea; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-card .value { font-size: 2.5em; font-weight: bold; color: #667eea; }
+        .stat-card .label { color: #666; font-size: 0.9em; margin-top: 5px; }
+        .dup-group { background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #dc3545; }
+        .file-list { margin-top: 10px; }
+        .file-item { background: white; padding: 10px; margin: 5px 0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .file-item.keep { border-left: 3px solid #28a745; }
+        .file-item.delete { border-left: 3px solid #dc3545; }
+        .file-path { font-family: monospace; font-size: 0.85em; color: #555; word-break: break-all; }
+        .file-meta { font-size: 0.8em; color: #888; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 600; margin-left: 10px; }
+        .badge-keep { background: #d4edda; color: #155724; }
+        .badge-delete { background: #f8d7da; color: #721c24; }
+        .badge-size { background: #e3f2fd; color: #1976d2; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .footer { text-align: center; color: #666; padding: 20px; font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .hash { font-family: monospace; font-size: 0.8em; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Duplicate Detection Report</h1>
+        <p>Generated: 2026-03-03 23:42 MST</p>
+        <p>Source: audit_20260303_233003.csv • Drive: /media/az/drive64gb</p>
+    </div>
+
+    <div class="section">
+        <h2>📊 Summary</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value">1590</div>
+                <div class="label">Total Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">1586</div>
+                <div class="label">Unique Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">2</div>
+                <div class="label">Duplicate Groups</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">6</div>
+                <div class="label">Files in Dup Groups</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">1.32</div>
+                <div class="label">Recoverable (MB)</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">0.0013</div>
+                <div class="label">Recoverable (GB)</div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> This report never auto-deletes files. Review carefully before taking action.
+            Always verify files before deletion and maintain backups.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📋 Exact Duplicate Groups</h2>
+        <p>Files grouped by SHA256 hash. Green = recommended to KEEP, Red = recommended to DELETE.</p>
+
+        <div class="dup-group">
+            <strong>Group #1</strong> • 
+            <strong>Hash:</strong> <span class="hash">e3b0c44298fc1c149afbf4c8996fb924...</span> • 
+            <strong>Copies:</strong> 4 • 
+            <strong>Size:</strong> 0.00 MB each •
+            <strong>Wasted:</strong> 0.00 MB
+            
+            <div class="file-list">
+
+                <div class="file-item keep">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/.PM_lock</div>
+                        <div class="file-meta">Modified: 2022-08-10T14:29:44.240000</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-keep">KEEP</span>
+                        <span class="badge badge-size">0.0 MB</span>
+                    </div>
+                </div>
+
+                <div class="file-item delete">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/PRIVATE/SONY/SONYCARD.IND</div>
+                        <div class="file-meta">Modified: 1979-11-29T17:00:00</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-delete">DELETE</span>
+                        <span class="badge badge-size">0.0 MB</span>
+                    </div>
+                </div>
+
+                <div class="file-item delete">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/DCIM/.PM_lock</div>
+                        <div class="file-meta">Modified: 2022-08-10T14:29:46.160000</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-delete">DELETE</span>
+                        <span class="badge badge-size">0.0 MB</span>
+                    </div>
+                </div>
+
+                <div class="file-item delete">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/DCIM/100MSDCF/.PM_lock</div>
+                        <div class="file-meta">Modified: 2022-08-10T14:29:48.990000</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-delete">DELETE</span>
+                        <span class="badge badge-size">0.0 MB</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="dup-group">
+            <strong>Group #2</strong> • 
+            <strong>Hash:</strong> <span class="hash">6a9c5a6b9f33d0b6f64f6eaac3c8d801...</span> • 
+            <strong>Copies:</strong> 2 • 
+            <strong>Size:</strong> 1.32 MB each •
+            <strong>Wasted:</strong> 1.32 MB
+            
+            <div class="file-list">
+
+                <div class="file-item keep">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/AVF_INFO/AVIN0001.INP</div>
+                        <div class="file-meta">Modified: 2025-03-17T02:41:01</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-keep">KEEP</span>
+                        <span class="badge badge-size">1.3 MB</span>
+                    </div>
+                </div>
+
+                <div class="file-item delete">
+                    <div>
+                        <div class="file-path">/media/az/drive64gb/AVF_INFO/AVIN0001.BNP</div>
+                        <div class="file-meta">Modified: 2025-03-17T02:41:01</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-delete">DELETE</span>
+                        <span class="badge badge-size">1.3 MB</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>Generated by MediaAuditOrganizer • 2026-03-03 23:42 MST</p>
+        <p>Review carefully before taking any action. Always backup before deleting.</p>
+    </div>
+</body>
+</html>
