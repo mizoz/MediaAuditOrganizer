@@ -3,9 +3,5 @@
   "buildCommand": "cd gui && npm install && npm run build",
   "outputDirectory": "gui/dist",
   "installCommand": "echo 'install handled in buildCommand'",
-  "framework": null,
-  "rewrites": [
-    { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/dashboard/:path*", "destination": "/index.html" }
-  ]
+  "framework": null
 }
