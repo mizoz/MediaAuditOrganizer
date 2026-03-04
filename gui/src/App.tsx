@@ -1,8 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
+import { LandingPage } from './pages/LandingPage';
 import PasswordGate from './components/PasswordGate';
-import { Dashboard as MainDashboard } from './components/Dashboard';
 import Dashboard from './pages/Dashboard';
 
 const queryClient = new QueryClient({

@@ -4,7 +4,7 @@ interface LandingPageProps {
   className?: string;
 }
 
-export function LandingPage({ className }: LandingPageProps) {
+export function LandingPage(_props: LandingPageProps) {
   return (
     <div className="min-h-screen bg-obsidian-900 text-slate-100">
       {/* Hero Section */}
