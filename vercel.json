@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd gui && npm install && npm run build && cp -r dist/* landing/ && mkdir -p landing/dashboard && cp dist/index.html landing/dashboard/",
+  "buildCommand": "cd gui && npm install && npm run build && cp -r dist/* landing/ && mkdir -p landing/dashboard landing/data && cp dist/index.html landing/dashboard/ && cp -r dist/data landing/",
   "outputDirectory": "landing",
   "installCommand": "echo 'install handled in buildCommand'",
   "framework": null,
