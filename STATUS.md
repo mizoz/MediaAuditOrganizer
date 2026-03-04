@@ -19,12 +19,13 @@
 - ✅ **2026-03-04 00:31** — Sidecar sync complete (500 sidecars verified)
 - ✅ **2026-03-04 00:31** — GPU hashing complete (0 files — INCOMING empty)
 - ✅ **2026-03-04 06:08** — Tauri GUI backend builds successfully
+- ✅ **2026-03-04 06:36** — Tauri GUI E2E test complete (13 commands verified)
 
 ## System Health
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Tauri GUI Backend | ✅ Backend verified + DB wired | query_database() hits real SQLite |
+| Tauri GUI Backend | ✅ Backend verified + DB wired | query_database() hits real SQLite, E2E tested |
 | FFmpeg NVENC | ✅ Ready | h264/hevc/av1_nvenc available |
 | Database | ✅ Active (Rust integrated) | sqlx async queries, 3 unit tests passing |
 | Checkpoint System | ✅ Active | 500 checkpoints, rollback enabled |

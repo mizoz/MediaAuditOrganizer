@@ -68,51 +68,5 @@
       "timestampUrl": ""
     }
   },
-  "plugins": {
-    "shell": {
-      "scope": [
-        {
-          "name": "python",
-          "cmd": "python3",
-          "args": true
-        },
-        {
-          "name": "audit-drive",
-          "cmd": "python3",
-          "args": true
-        },
-        {
-          "name": "deduplicate",
-          "cmd": "python3",
-          "args": true
-        },
-        {
-          "name": "transfer-assets",
-          "cmd": "python3",
-          "args": true
-        },
-        {
-          "name": "exiftool",
-          "cmd": "exiftool",
-          "args": true
-        },
-        {
-          "name": "ffmpeg",
-          "cmd": "ffmpeg",
-          "args": true
-        }
-      ]
-    },
-    "fs": {
-      "scope": [
-        "/media/**",
-        "/mnt/**",
-        "/Volumes/**",
-        "$HOME/Pictures/**",
-        "$HOME/Videos/**",
-        "$HOME/Documents/**"
-      ],
-      "requireLiteralLeadingDot": false
-    }
-  }
+  "plugins": {}
 }
