@@ -5,8 +5,6 @@
   "installCommand": "cd gui && npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/dashboard/(.*)", "destination": "/index.html" },
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/((?!assets|.*\\..*).*)", "destination": "/index.html" }
   ]
 }
