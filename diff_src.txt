@@ -1,0 +1,219 @@
+diff --git a/gui/src/App.tsx b/gui/src/App.tsx
+index 678cef5..eabb60b 100644
+--- a/gui/src/App.tsx
++++ b/gui/src/App.tsx
+@@ -1,6 +1,7 @@
+ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+ import { BrowserRouter, Routes, Route } from 'react-router-dom';
+-import { Dashboard as MainDashboard } from './components/Dashboard';
++import { LandingPage } from './pages/LandingPage';
++import PasswordGate from './components/PasswordGate';
+ import Dashboard from './pages/Dashboard';
+ 
+ const queryClient = new QueryClient({
+@@ -17,8 +18,15 @@ function App() {
+     <BrowserRouter>
+       <QueryClientProvider client={queryClient}>
+         <Routes>
+-          <Route path="/" element={<MainDashboard />} />
+-          <Route path="/dashboard" element={<Dashboard />} />
++          <Route path="/" element={<LandingPage />} />
++          <Route 
++            path="/dashboard" 
++            element={
++              <PasswordGate>
++                <Dashboard />
++              </PasswordGate>
++            } 
++          />
+         </Routes>
+       </QueryClientProvider>
+     </BrowserRouter>
+diff --git a/gui/src/components/PasswordGate.tsx b/gui/src/components/PasswordGate.tsx
+new file mode 100644
+index 0000000..7e7e272
+--- /dev/null
++++ b/gui/src/components/PasswordGate.tsx
+@@ -0,0 +1,79 @@
++import { useState } from 'react';
++import { useNavigate } from 'react-router-dom';
++
++interface PasswordGateProps {
++  children: React.ReactNode;
++}
++
++const CORRECT_PASSWORD = 'axiomatic2026'; // In production, this would be env var
++
++export default function PasswordGate({ children }: PasswordGateProps) {
++  const [password, setPassword] = useState('');
++  const [isAuthenticated, setIsAuthenticated] = useState(false);
++  const [error, setError] = useState('');
++  const navigate = useNavigate();
++
++  const handleSubmit = (e: React.FormEvent) => {
++    e.preventDefault();
++    if (password === CORRECT_PASSWORD) {
++      setIsAuthenticated(true);
++      setError('');
++    } else {
++      setError('Incorrect password');
++      setPassword('');
++    }
++  };
++
++  const handleBack = () => {
++    navigate('/');
++  };
++
++  if (isAuthenticated) {
++    return <>{children}</>;
++  }
++
++  return (
++    <div className="min-h-screen bg-obsidian-900 flex items-center justify-center p-4">
++      <div className="max-w-md w-full bg-slate-900 rounded-lg border border-slate-800 p-8">
++        <h2 className="text-2xl font-bold text-slate-100 mb-2">
++          Dashboard Access
++        </h2>
++        <p className="text-slate-400 mb-6">
++          Enter password to continue
++        </p>
++        
++        <form onSubmit={handleSubmit} className="space-y-4">
++          <div>
++            <input
++              type="password"
++              value={password}
++              onChange={(e) => setPassword(e.target.value)}
++              className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
++              placeholder="Password"
++              autoFocus
++            />
++            {error && (
++              <p className="mt-2 text-sm text-red-400">{error}</p>
++            )}
++          </div>
++          
++          <div className="flex gap-3">
++            <button
++              type="submit"
++              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
++            >
++              Continue
++            </button>
++            <button
++              type="button"
++              onClick={handleBack}
++              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg font-medium transition-colors"
++            >
++              Back
++            </button>
++          </div>
++        </form>
++      </div>
++    </div>
++  );
++}
+diff --git a/gui/src/pages/Dashboard.tsx b/gui/src/pages/Dashboard.tsx
+index 60c7df5..234023a 100644
+--- a/gui/src/pages/Dashboard.tsx
++++ b/gui/src/pages/Dashboard.tsx
+@@ -1,6 +1,28 @@
+-import { snapshot, tasks } from '../data';
++import { useState, useEffect } from 'react';
+ 
+ export default function Dashboard() {
++  const [snapshot, setSnapshot] = useState<any>(null);
++  const [tasks, setTasks] = useState<any[]>([]);
++  const [loading, setLoading] = useState(true);
++
++  useEffect(() => {
++    Promise.all([
++      fetch('/data/snapshot.json').then(r => r.json()),
++      fetch('/data/tasks.json').then(r => r.json())
++    ]).then(([snapshotData, tasksData]) => {
++      setSnapshot(snapshotData);
++      setTasks(tasksData);
++      setLoading(false);
++    }).catch(err => {
++      console.error('Failed to load dashboard data:', err);
++      setLoading(false);
++    });
++  }, []);
++
++  if (loading || !snapshot) {
++    return <div className="min-h-screen bg-obsidian-900 flex items-center justify-center text-slate-100">Loading...</div>;
++  }
++
+   return (
+     <div className="dashboard min-h-screen bg-obsidian-900 text-slate-100 p-8">
+       {/* SECTION 1: Header */}
+@@ -36,7 +58,7 @@ export default function Dashboard() {
+       <section className="mb-8">
+         <h2 className="text-xl font-semibold text-slate-100 mb-4">Workflow Pipeline</h2>
+         <div className="space-y-2">
+-          {snapshot.workflow.map((phase, i) => (
++          {snapshot.workflow.map((phase: any, i: number) => (
+             <div
+               key={i}
+               className={`phase p-3 rounded border ${
+@@ -68,7 +90,7 @@ export default function Dashboard() {
+               </tr>
+             </thead>
+             <tbody>
+-              {snapshot.drives.map((drive, i) => (
++              {snapshot.drives.map((drive: any, i: number) => (
+                 <tr key={i} className="border-b border-slate-800 last:border-0">
+                   <td className="p-3 text-slate-200">{drive.name}</td>
+                   <td className="p-3">
+diff --git a/gui/src/pages/LandingPage.tsx b/gui/src/pages/LandingPage.tsx
+new file mode 100644
+index 0000000..888a76b
+--- /dev/null
++++ b/gui/src/pages/LandingPage.tsx
+@@ -0,0 +1,45 @@
++import { Link } from 'react-router-dom';
++
++interface LandingPageProps {
++  className?: string;
++}
++
++export function LandingPage(_props: LandingPageProps) {
++  return (
++    <div className="min-h-screen bg-obsidian-900 text-slate-100">
++      {/* Hero Section */}
++      <header className="container mx-auto px-6 py-16">
++        <h1 className="text-5xl font-bold mb-4">
++          AXIOMATIC
++        </h1>
++        <p className="text-xl text-slate-400 mb-8">
++          Local-First Media Organization for Professionals
++        </p>
++        <Link 
++          to="/dashboard" 
++          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium transition-colors"
++        >
++          Open Dashboard →
++        </Link>
++      </header>
++
++      {/* Features */}
++      <section className="container mx-auto px-6 py-12">
++        <div className="grid md:grid-cols-3 gap-8">
++          <div className="p-6 bg-slate-900 rounded-lg border border-slate-800">
++            <h3 className="text-lg font-semibold mb-2">12 Specialized Agents</h3>
++            <p className="text-slate-400">Orchestrated workflow for media processing</p>
++          </div>
++          <div className="p-6 bg-slate-900 rounded-lg border border-slate-800">
++            <h3 className="text-lg font-semibold mb-2">100% Local Processing</h3>
++            <p className="text-slate-400">Your data never leaves your machine</p>
++          </div>
++          <div className="p-6 bg-slate-900 rounded-lg border border-slate-800">
++            <h3 className="text-lg font-semibold mb-2">Zero Cloud Dependencies</h3>
++            <p className="text-slate-400">Complete privacy and control</p>
++          </div>
++        </div>
++      </section>
++    </div>
++  );
++}
