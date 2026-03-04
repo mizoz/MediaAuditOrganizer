@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import PasswordGate from './components/PasswordGate';
 import { Dashboard as MainDashboard } from './components/Dashboard';
 import Dashboard from './pages/Dashboard';
 
@@ -17,8 +19,15 @@ function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <Routes>
-          <Route path="/" element={<MainDashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <PasswordGate>
+                <Dashboard />
+              </PasswordGate>
+            } 
+          />
         </Routes>
       </QueryClientProvider>
     </BrowserRouter>
