@@ -4,9 +4,30 @@
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use std::fs;
+use std::path::PathBuf;
 
 // Import shared types from lib
 use media_audit_organizer_lib::{TaskStatus, AppState};
+
+// Database helper function
+fn get_db_path() -> PathBuf {
+    // Try multiple possible paths for the database
+    let candidate_paths = vec![
+        PathBuf::from("../../06_METADATA/media_audit.db"),
+        PathBuf::from("../../../06_METADATA/media_audit.db"),
+        PathBuf::from("../06_METADATA/media_audit.db"),
+        PathBuf::from("./06_METADATA/media_audit.db"),
+    ];
+    
+    for path in candidate_paths {
+        if path.exists() {
+            return path;
+        }
+    }
+    
+    // Default to the expected path
+    PathBuf::from("../../06_METADATA/media_audit.db")
+}
 
 // ===== DATA STRUCTURES =====
 
@@ -169,20 +190,56 @@ fn scan_drives() -> Result<Vec<DriveInfo>, String> {
 }
 
 #[tauri::command]
-fn query_database(
-    filters: Option<serde_json::Value>,
-    page: Option<u32>,
-    page_size: Option<u32>,
-) -> Result<serde_json::Value, String> {
-    // In production, this would query the SQLite database
-    // For now, return mock data structure
-    Ok(serde_json::json!({
-        "assets": [],
-        "total": 0,
-        "page": page.unwrap_or(1),
-        "page_size": page_size.unwrap_or(100),
-        "total_pages": 0
-    }))
+async fn query_database(
+    sql: String,
+) -> Result<String, String> {
+    use sqlx::{SqlitePool, Row, Column};
+    
+    let db_path = get_db_path();
+    
+    // Build connection string
+    let db_url = format!("sqlite://{}", db_path.display());
+    
+    // Create connection pool
+    let pool = SqlitePool::connect(&db_url)
+        .await
+        .map_err(|e| format!("Failed to connect to database: {}", e))?;
+    
+    // For SELECT queries, return rows as JSON
+    let sql_lower = sql.trim().to_lowercase();
+    if sql_lower.starts_with("select") {
+        let rows = sqlx::query(&sql)
+            .fetch_all(&pool)
+            .await
+            .map_err(|e| format!("Query failed: {}", e))?;
+        
+        // Convert rows to JSON
+        let mut result_rows: Vec<serde_json::Map<String, serde_json::Value>> = Vec::new();
+        
+        for row in rows {
+            let mut map = serde_json::Map::new();
+            for (i, column) in row.columns().iter().enumerate() {
+                let col_name = column.name().to_string();
+                // Try to get value as text, fall back to null
+                let value: Option<String> = row.try_get(i).ok();
+                map.insert(
+                    col_name,
+                    serde_json::Value::String(value.unwrap_or_else(|| "null".to_string()))
+                );
+            }
+            result_rows.push(map);
+        }
+        
+        Ok(serde_json::to_string(&result_rows).unwrap_or_else(|e| format!("{{\"error\": \"{}\"}}", e)))
+    } else {
+        // For INSERT/UPDATE/DELETE, return affected rows
+        let result = sqlx::query(&sql)
+            .execute(&pool)
+            .await
+            .map_err(|e| format!("Execute failed: {}", e))?;
+        
+        Ok(format!("{{\"rows_affected\": {}}}", result.rows_affected()))
+    }
 }
 
 #[tauri::command]
@@ -324,6 +381,36 @@ fn get_task_logs(task_id: String, lines: u32, state: tauri::State<AppState>) -> 
     };
     
     Ok(all_lines[start..].join("\n"))
+}
+
+// ===== UNIT TESTS =====
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[tokio::test]
+    async fn test_query_database_count() {
+        // Test a simple COUNT query
+        let result = query_database("SELECT COUNT(*) as count FROM assets".to_string()).await;
+        assert!(result.is_ok(), "Query should succeed: {:?}", result);
+        let json = result.unwrap();
+        assert!(json.contains("count"), "Should return count field: {}", json);
+    }
+    
+    #[tokio::test]
+    async fn test_query_database_select() {
+        // Test selecting from execution_logs
+        let result = query_database("SELECT * FROM execution_logs LIMIT 1".to_string()).await;
+        assert!(result.is_ok(), "Query should succeed: {:?}", result);
+    }
+    
+    #[test]
+    fn test_get_db_path() {
+        let path = get_db_path();
+        assert!(path.exists() || path.to_string_lossy().contains("media_audit.db"), 
+                "DB path should point to media_audit.db: {:?}", path);
+    }
 }
 
 // ===== MAIN FUNCTION =====

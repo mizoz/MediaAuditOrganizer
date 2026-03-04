@@ -41,8 +41,7 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "../../scripts/*.py",
-      "../../.venv/**/*"
+      "../../scripts/*.py"
     ],
 
     "category": "DeveloperTool",

@@ -12,6 +12,7 @@
 
 ## Recent Activity
 
+- ✅ **2026-03-04 06:48** — Rust backend fixes applied: query_database() wired to SQLite, .venv permission resolved
 - ✅ **2026-03-04 06:27** — drive64gb safely unmounted (5/5 spot-checks passed)
 - ✅ **2026-03-04 01:44** — drive64gb transfer complete (500 files, 16.68 GB, SHA256 verified)
 - ✅ **2026-03-04 00:31** — Checkpoint sentinel complete (500 checkpoints created)
@@ -23,9 +24,9 @@
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Tauri GUI Backend | ✅ Ready | Cargo build successful |
+| Tauri GUI Backend | ✅ Backend verified + DB wired | query_database() hits real SQLite |
 | FFmpeg NVENC | ✅ Ready | h264/hevc/av1_nvenc available |
-| Database | ✅ Active | 22 tasks logged, 10 tables |
+| Database | ✅ Active (Rust integrated) | sqlx async queries, 3 unit tests passing |
 | Checkpoint System | ✅ Active | 500 checkpoints, rollback enabled |
 | Sidecar Sync | ✅ Complete | 500 sidecars verified |
 
