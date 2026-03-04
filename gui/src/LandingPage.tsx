@@ -8,11 +8,11 @@ const LandingPage: React.FC = () => {
   const [tickerIndex, setTickerIndex] = useState(0);
 
   const statusMessages = [
-    'System Ready — All Services Operational',
-    'Last Audit: 2026-03-03 23:47 MST',
-    'Sidecar Sync: 100% Integrity Verified',
-    'Checksum Validation: PASSED',
-    'Archive Status: 0 Conflicts Detected'
+    'SYS: All Services Operational',
+    'CHK: Integrity Verified 100%',
+    'VOL: 500+ Files Indexed',
+    'LOG: Last Audit 2026-03-04',
+    'NET: Zero Conflicts Detected'
   ];
 
   useEffect(() => {
@@ -33,8 +33,10 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="axm-root">
+    <div className="lp-root">
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
         :root {
           --amber: #E8A020;
           --green: #3DCC78;
@@ -44,8 +46,8 @@ const LandingPage: React.FC = () => {
           --text: #E5E5E5;
           --text-muted: #888888;
           --border: #2A2A2A;
-          --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-          --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          --font-mono: 'IBM Plex Mono', monospace;
+          --font-display: 'Syne', sans-serif;
         }
 
         * {
@@ -54,16 +56,16 @@ const LandingPage: React.FC = () => {
           box-sizing: border-box;
         }
 
-        .axm-root {
+        .lp-root {
           min-height: 100vh;
           background: var(--bg);
           color: var(--text);
-          font-family: var(--font-sans);
+          font-family: var(--font-mono);
           position: relative;
           overflow-x: hidden;
         }
 
-        .axm-grain {
+        .lp-grain {
           position: fixed;
           top: 0;
           left: 0;
@@ -75,7 +77,39 @@ const LandingPage: React.FC = () => {
           z-index: 0;
         }
 
-        .axm-nav {
+        .lp-scan {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--amber), transparent);
+          animation: scanline 8s linear infinite;
+          z-index: 1;
+          opacity: 0.3;
+        }
+
+        @keyframes scanline {
+          0% { transform: translateY(-100vh); }
+          100% { transform: translateY(100vh); }
+        }
+
+        .lp-canvas {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: 
+            linear-gradient(var(--border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--border) 1px, transparent 1px);
+          background-size: 60px 60px;
+          opacity: 0.1;
+          z-index: 0;
+          pointer-events: none;
+        }
+
+        .lp-nav {
           position: fixed;
           top: 0;
           left: 0;
@@ -91,16 +125,16 @@ const LandingPage: React.FC = () => {
           z-index: 100;
         }
 
-        .axm-brand {
-          font-family: var(--font-mono);
-          font-size: 14px;
-          font-weight: 700;
-          letter-spacing: 2px;
+        .lp-brand {
+          font-family: var(--font-display);
+          font-size: 16px;
+          font-weight: 800;
+          letter-spacing: 3px;
           color: var(--amber);
           text-transform: uppercase;
         }
 
-        .axm-nav-status {
+        .lp-nav-status {
           font-family: var(--font-mono);
           font-size: 12px;
           color: var(--green);
@@ -109,7 +143,7 @@ const LandingPage: React.FC = () => {
           gap: 8px;
         }
 
-        .axm-nav-status::before {
+        .lp-nav-status::before {
           content: '';
           width: 8px;
           height: 8px;
@@ -123,53 +157,83 @@ const LandingPage: React.FC = () => {
           50% { opacity: 0.5; }
         }
 
-        .axm-hero {
-          padding: 160px 48px 80px;
+        .lp-hero {
+          padding: 180px 48px 100px;
           text-align: center;
           position: relative;
           z-index: 1;
         }
 
-        .axm-hero-title {
-          font-family: var(--font-mono);
-          font-size: 48px;
-          font-weight: 700;
-          letter-spacing: -2px;
-          margin-bottom: 16px;
+        .lp-hero-title {
+          font-family: var(--font-display);
+          font-size: 72px;
+          font-weight: 800;
+          letter-spacing: -3px;
+          margin-bottom: 24px;
+          line-height: 1.1;
+        }
+
+        .lp-hero-title .line-1 {
+          display: block;
           background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
 
-        .axm-hero-subtitle {
-          font-size: 18px;
+        .lp-hero-title .line-2 {
+          display: block;
+          color: var(--amber);
+        }
+
+        .lp-hero-subtitle {
+          font-size: 16px;
           color: var(--text-muted);
           max-width: 600px;
           margin: 0 auto 48px;
-          line-height: 1.6;
+          line-height: 1.7;
         }
 
-        .axm-status {
+        .lp-status {
           background: var(--surface);
           border: 1px solid var(--border);
           border-radius: 4px;
-          padding: 24px;
-          max-width: 800px;
+          padding: 20px 32px;
+          max-width: 700px;
           margin: 0 auto 64px;
           font-family: var(--font-mono);
         }
 
-        .axm-status-ticker {
+        .lp-status-ticker {
           font-size: 13px;
           color: var(--green);
           min-height: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
+          letter-spacing: 1px;
         }
 
-        .axm-stats {
+        .lp-ticker-labels {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid var(--border);
+        }
+
+        .lp-ticker-label {
+          font-size: 11px;
+          color: var(--text-muted);
+          letter-spacing: 2px;
+        }
+
+        .lp-ticker-label.active {
+          color: var(--amber);
+        }
+
+        .lp-stats {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 24px;
@@ -177,7 +241,7 @@ const LandingPage: React.FC = () => {
           margin: 0 auto 80px;
         }
 
-        .axm-stat {
+        .lp-stat {
           background: var(--surface-elev);
           border: 1px solid var(--border);
           border-radius: 4px;
@@ -185,29 +249,29 @@ const LandingPage: React.FC = () => {
           text-align: center;
         }
 
-        .axm-stat-value {
-          font-family: var(--font-mono);
-          font-size: 32px;
+        .lp-stat-value {
+          font-family: var(--font-display);
+          font-size: 36px;
           font-weight: 700;
           color: var(--amber);
           margin-bottom: 8px;
         }
 
-        .axm-stat-label {
-          font-size: 12px;
+        .lp-stat-label {
+          font-size: 11px;
           color: var(--text-muted);
           text-transform: uppercase;
           letter-spacing: 1px;
         }
 
-        .axm-features {
+        .lp-features {
           padding: 80px 48px;
           background: var(--surface);
           border-top: 1px solid var(--border);
           border-bottom: 1px solid var(--border);
         }
 
-        .axm-features-grid {
+        .lp-features-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 32px;
@@ -215,46 +279,47 @@ const LandingPage: React.FC = () => {
           margin: 0 auto;
         }
 
-        .axm-feature {
+        .lp-feature {
           background: var(--bg);
           border: 1px solid var(--border);
           border-radius: 4px;
           padding: 32px;
         }
 
-        .axm-feature-icon {
+        .lp-feature-icon {
           font-family: var(--font-mono);
           font-size: 24px;
           color: var(--amber);
           margin-bottom: 16px;
         }
 
-        .axm-feature-title {
+        .lp-feature-title {
+          font-family: var(--font-display);
           font-size: 18px;
-          font-weight: 600;
+          font-weight: 700;
           margin-bottom: 12px;
         }
 
-        .axm-feature-desc {
+        .lp-feature-desc {
           font-size: 14px;
           color: var(--text-muted);
           line-height: 1.6;
         }
 
-        .axm-pipeline {
+        .lp-pipeline {
           padding: 80px 48px;
           text-align: center;
         }
 
-        .axm-pipeline-title {
-          font-family: var(--font-mono);
+        .lp-pipeline-title {
+          font-family: var(--font-display);
           font-size: 24px;
           font-weight: 700;
           margin-bottom: 48px;
-          letter-spacing: 1px;
+          letter-spacing: 2px;
         }
 
-        .axm-pipeline-steps {
+        .lp-pipeline-steps {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -264,49 +329,50 @@ const LandingPage: React.FC = () => {
           margin: 0 auto;
         }
 
-        .axm-step {
+        .lp-step {
           background: var(--surface);
           border: 1px solid var(--border);
           border-radius: 4px;
           padding: 16px 24px;
           font-family: var(--font-mono);
           font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 1px;
+          font-weight: 600;
+          letter-spacing: 2px;
           text-transform: uppercase;
           color: var(--text-muted);
           position: relative;
         }
 
-        .axm-step::after {
+        .lp-step::after {
           content: '→';
           position: absolute;
           right: -20px;
           color: var(--amber);
         }
 
-        .axm-step:last-child::after {
+        .lp-step:last-child::after {
           display: none;
         }
 
-        .axm-step.active {
+        .lp-step.active {
           border-color: var(--amber);
           color: var(--amber);
+          box-shadow: 0 0 20px rgba(232, 160, 32, 0.2);
         }
 
-        .axm-request {
+        .lp-request {
           padding: 80px 48px;
           background: var(--surface);
           border-top: 1px solid var(--border);
         }
 
-        .axm-request-form {
+        .lp-request-form {
           max-width: 500px;
           margin: 0 auto;
         }
 
-        .axm-request-title {
-          font-family: var(--font-mono);
+        .lp-request-title {
+          font-family: var(--font-display);
           font-size: 20px;
           font-weight: 700;
           text-align: center;
@@ -314,11 +380,11 @@ const LandingPage: React.FC = () => {
           letter-spacing: 1px;
         }
 
-        .axm-input-group {
+        .lp-input-group {
           margin-bottom: 16px;
         }
 
-        .axm-input {
+        .lp-input {
           width: 100%;
           padding: 16px;
           background: var(--bg);
@@ -331,11 +397,11 @@ const LandingPage: React.FC = () => {
           transition: border-color 0.2s;
         }
 
-        .axm-input:focus {
+        .lp-input:focus {
           border-color: var(--amber);
         }
 
-        .axm-btn {
+        .lp-btn {
           width: 100%;
           padding: 16px;
           background: var(--amber);
@@ -351,11 +417,11 @@ const LandingPage: React.FC = () => {
           transition: opacity 0.2s;
         }
 
-        .axm-btn:hover {
+        .lp-btn:hover {
           opacity: 0.9;
         }
 
-        .axm-confirmation {
+        .lp-confirmation {
           text-align: center;
           padding: 32px;
           background: var(--bg);
@@ -366,13 +432,13 @@ const LandingPage: React.FC = () => {
           color: var(--green);
         }
 
-        .axm-footer {
+        .lp-footer {
           padding: 48px;
           text-align: center;
           border-top: 1px solid var(--border);
         }
 
-        .axm-footer-text {
+        .lp-footer-text {
           font-family: var(--font-mono);
           font-size: 12px;
           color: var(--text-muted);
@@ -380,98 +446,113 @@ const LandingPage: React.FC = () => {
         }
 
         @media (max-width: 1024px) {
-          .axm-stats {
+          .lp-stats {
             grid-template-columns: repeat(2, 1fr);
           }
-          .axm-features-grid {
+          .lp-features-grid {
             grid-template-columns: 1fr;
+          }
+          .lp-hero-title {
+            font-size: 56px;
           }
         }
 
         @media (max-width: 768px) {
-          .axm-nav {
+          .lp-nav {
             padding: 0 24px;
           }
-          .axm-hero {
-            padding: 120px 24px 60px;
+          .lp-hero {
+            padding: 140px 24px 60px;
           }
-          .axm-hero-title {
-            font-size: 32px;
+          .lp-hero-title {
+            font-size: 42px;
           }
-          .axm-stats {
+          .lp-stats {
             grid-template-columns: 1fr;
           }
-          .axm-pipeline-steps {
+          .lp-pipeline-steps {
             flex-direction: column;
           }
-          .axm-step::after {
+          .lp-step::after {
             display: none;
           }
         }
       `}</style>
 
-      <div className="axm-grain" />
+      <div className="lp-grain" />
+      <div className="lp-scan" />
+      <div className="lp-canvas" />
 
-      <nav className="axm-nav">
-        <div className="axm-brand">AXIOMATIC</div>
-        <div className="axm-nav-status">SYSTEM OPERATIONAL</div>
+      <nav className="lp-nav">
+        <div className="lp-brand">AXIOMATIC</div>
+        <div className="lp-nav-status">SYSTEM OPERATIONAL</div>
       </nav>
 
-      <section className="axm-hero">
-        <h1 className="axm-hero-title">MEDIA AUDIT ORGANIZER</h1>
-        <p className="axm-hero-subtitle">
+      <section className="lp-hero">
+        <h1 className="lp-hero-title">
+          <span className="line-1">Every</span>
+          <span className="line-2">Accounted</span>
+        </h1>
+        <p className="lp-hero-subtitle">
           Industrial-grade photo workflow automation with cryptographic sidecar architecture.
           Built for photographers who demand absolute integrity and chain-of-custody verification.
         </p>
 
-        <div className="axm-status">
-          <div className="axm-status-ticker">
+        <div className="lp-status">
+          <div className="lp-status-ticker">
             {statusMessages[tickerIndex]}
+          </div>
+          <div className="lp-ticker-labels">
+            <span className="lp-ticker-label active">SYS</span>
+            <span className="lp-ticker-label">CHK</span>
+            <span className="lp-ticker-label">VOL</span>
+            <span className="lp-ticker-label">LOG</span>
+            <span className="lp-ticker-label">NET</span>
           </div>
         </div>
 
-        <div className="axm-stats">
-          <div className="axm-stat">
-            <div className="axm-stat-value">500+</div>
-            <div className="axm-stat-label">RAW Files</div>
+        <div className="lp-stats">
+          <div className="lp-stat">
+            <div className="lp-stat-value">500+</div>
+            <div className="lp-stat-label">RAW Files</div>
           </div>
-          <div className="axm-stat">
-            <div className="axm-stat-value">16</div>
-            <div className="axm-stat-label">Audit Sessions</div>
+          <div className="lp-stat">
+            <div className="lp-stat-value">16</div>
+            <div className="lp-stat-label">Audit Sessions</div>
           </div>
-          <div className="axm-stat">
-            <div className="axm-stat-value">0</div>
-            <div className="axm-stat-label">Sidecar Conflicts</div>
+          <div className="lp-stat">
+            <div className="lp-stat-value">0</div>
+            <div className="lp-stat-label">Conflicts</div>
           </div>
-          <div className="axm-stat">
-            <div className="axm-stat-value">100%</div>
-            <div className="axm-stat-label">CoC Integrity</div>
+          <div className="lp-stat">
+            <div className="lp-stat-value">100%</div>
+            <div className="lp-stat-label">Integrity</div>
           </div>
         </div>
       </section>
 
-      <section className="axm-features">
-        <div className="axm-features-grid">
-          <div className="axm-feature">
-            <div className="axm-feature-icon">⚡</div>
-            <div className="axm-feature-title">Automated Ingestion</div>
-            <div className="axm-feature-desc">
+      <section className="lp-features">
+        <div className="lp-features-grid">
+          <div className="lp-feature">
+            <div className="lp-feature-icon">⚡</div>
+            <div className="lp-feature-title">Automated Ingestion</div>
+            <div className="lp-feature-desc">
               Mount any drive and instantly scan for RAW files. Automatic format detection,
               checksum generation, and metadata extraction without manual intervention.
             </div>
           </div>
-          <div className="axm-feature">
-            <div className="axm-feature-icon">🔐</div>
-            <div className="axm-feature-title">Sidecar Architecture</div>
-            <div className="axm-feature-desc">
+          <div className="lp-feature">
+            <div className="lp-feature-icon">🔐</div>
+            <div className="lp-feature-title">Sidecar Architecture</div>
+            <div className="lp-feature-desc">
               JSON sidecars store all audit metadata separately from source files.
               Non-destructive workflow with full rollback capability and version tracking.
             </div>
           </div>
-          <div className="axm-feature">
-            <div className="axm-feature-icon">🛡️</div>
-            <div className="axm-feature-title">Hardened Dashboard</div>
-            <div className="axm-feature-desc">
+          <div className="lp-feature">
+            <div className="lp-feature-icon">🛡️</div>
+            <div className="lp-feature-title">Hardened Dashboard</div>
+            <div className="lp-feature-desc">
               Real-time monitoring of all audit sessions. Conflict detection, integrity
               verification, and comprehensive logging for professional accountability.
             </div>
@@ -479,37 +560,37 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="axm-pipeline">
-        <h2 className="axm-pipeline-title">AUDIT PIPELINE</h2>
-        <div className="axm-pipeline-steps">
-          <div className="axm-step active">MOUNT DRIVE</div>
-          <div className="axm-step active">SCAN FILES</div>
-          <div className="axm-step active">GEN SIDECARS</div>
-          <div className="axm-step active">VERIFY CHECKSUMS</div>
-          <div className="axm-step active">ARCHIVE</div>
+      <section className="lp-pipeline">
+        <h2 className="lp-pipeline-title">AUDIT PIPELINE</h2>
+        <div className="lp-pipeline-steps">
+          <div className="lp-step active">MOUNT</div>
+          <div className="lp-step active">SCAN</div>
+          <div className="lp-step active">SIDECAR</div>
+          <div className="lp-step active">VERIFY</div>
+          <div className="lp-step active">ARCHIVE</div>
         </div>
       </section>
 
-      <section className="axm-request">
-        <div className="axm-request-form">
-          <h2 className="axm-request-title">REQUEST ACCESS</h2>
+      <section className="lp-request">
+        <div className="lp-request-form">
+          <h2 className="lp-request-title">REQUEST ACCESS</h2>
           {submitted ? (
-            <div className="axm-confirmation">
+            <div className="lp-confirmation">
               ✓ Access granted. Redirecting to dashboard...
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div className="axm-input-group">
+              <div className="lp-input-group">
                 <input
                   type="email"
-                  className="axm-input"
+                  className="lp-input"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <button type="submit" className="axm-btn">
+              <button type="submit" className="lp-btn">
                 Authenticate
               </button>
             </form>
@@ -517,11 +598,11 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      <footer className="axm-footer">
-        <div className="axm-footer-text">
+      <footer className="lp-footer">
+        <div className="lp-footer-text">
           AXIOMATIC MEDIA AUDIT ORGANIZER © 2026
         </div>
-        <div className="axm-footer-text" style={{ marginTop: '8px' }}>
+        <div className="lp-footer-text" style={{ marginTop: '8px' }}>
           CHAIN OF CUSTODY VERIFIED · INTEGRITY PROTECTED
         </div>
       </footer>
