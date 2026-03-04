@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>AXIOMATIC — Local-First Media Organization for Professionals</title>
+    <meta name="description" content="Professional media management system that audits, deduplicates, and organizes photo/video libraries. Everything runs locally. We never see your data." />
+    <meta name="keywords" content="media organization, photo management, video organization, deduplication, local-first, professional workflow" />
+    <meta name="author" content="AXIOMATIC" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="AXIOMATIC — Local-First Media Organization" />
+    <meta property="og:description" content="12 specialized agents. 0 cloud uploads. 100% local processing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://axiomatic.dev" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AXIOMATIC — Local-First Media Organization" />
+    <meta name="twitter:description" content="Professional media management. Local-first. GPU-accelerated." />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    
+    <!-- Tailwind CSS (via CDN for zero-setup deployment) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              obsidian: '#1a1a1a',
+              slate: {
+                DEFAULT: '#4a5568',
+                light: '#64748b',
+              },
+              'cyber-lime': {
+                DEFAULT: '#a3e635',
+                hover: '#84cc16',
+                active: '#65a30d',
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+              mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+            },
+          },
+        },
+      }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+      /* Base styles */
+      * {
+        box-sizing: border-box;
+      }
+      
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        line-height: 1.5;
+      }
+      
+      /* Utility classes */
+      .pro-density {
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+      
+      /* Animation utilities */
+      .fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Focus styles */
+      :focus-visible {
+        outline: 2px solid #a3e635;
+        outline-offset: 2px;
+      }
+      
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-obsidian/80 backdrop-blur-md border-b border-slate/30">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded bg-cyber-lime flex items-center justify-center">
+            <span class="text-obsidian font-bold text-sm">AX</span>
+          </div>
+          <span class="font-bold text-white">AXIOMATIC</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#engine" class="text-sm text-slate-light hover:text-white transition-colors">Engine</a>
+          <a href="#roadmap" class="text-sm text-slate-light hover:text-white transition-colors">Roadmap</a>
+          <a
+            href="#waitlist"
+            class="px-4 py-2 bg-cyber-lime hover:bg-cyber-lime-hover text-obsidian font-semibold text-sm rounded-md transition-colors"
+          >
+            Join Waitlist
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main>
+      <section class="relative min-h-screen flex items-center justify-center bg-obsidian overflow-hidden pt-20">
+        <!-- Background grid pattern -->
+        <div class="absolute inset-0 opacity-10">
+          <div
+            style="
+              backgroundImage: linear-gradient(rgba(74, 85, 104, 0.3) 1px, transparent 1px),
+                               linear-gradient(90deg, rgba(74, 85, 104, 0.3) 1px, transparent 1px);
+              background-size: 48px 48px;
+            "
+          ></div>
+        </div>
+
+        <!-- Gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-obsidian via-obsidian/95 to-obsidian"></div>
+
+        <!-- Content -->
+        <div class="relative z-10 max-w-5xl mx-auto px-6 py-24">
+          <div class="fade-in">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-8 border border-slate rounded-md bg-slate/10">
+              <span class="w-2 h-2 rounded-full bg-cyber-lime animate-pulse"></span>
+              <span class="text-sm text-slate-light font-mono">ALPHA WAITLIST OPEN</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">
+              Your Drive is <span class="text-slate-light">Chaos</span>.<br />
+              We Build <span class="text-cyber-lime">Order</span>.
+            </h1>
+
+            <!-- Subhead -->
+            <p class="text-lg md:text-xl text-slate-light max-w-2xl mb-8 leading-relaxed">
+              AXIOMATIC is a professional media management system that audits, 
+              deduplicates, and organizes your photo/video libraries. 
+              <span class="text-white font-medium">Everything runs locally on your machine. We never see your data.</span>
+            </p>
+
+            <!-- Stats row -->
+            <div class="grid grid-cols-3 gap-6 mb-12 max-w-xl">
+              <div class="border-l-2 border-cyber-lime pl-4">
+                <div class="text-2xl font-bold text-white font-mono">12</div>
+                <div class="text-sm text-slate-light">Specialized Agents</div>
+              </div>
+              <div class="border-l-2 border-slate pl-4">
+                <div class="text-2xl font-bold text-white font-mono">0</div>
+                <div class="text-sm text-slate-light">Cloud Uploads</div>
+              </div>
+              <div class="border-l-2 border-slate pl-4">
+                <div class="text-2xl font-bold text-white font-mono">100%</div>
+                <div class="text-sm text-slate-light">Local Processing</div>
+              </div>
+            </div>
+
+            <!-- Waitlist CTA -->
+            <div id="waitlist" class="max-w-md">
+              <form id="waitlist-form" class="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="you@studio.com"
+                  required
+                  class="flex-1 px-4 py-3 bg-slate/10 border border-slate rounded-md font-mono text-sm focus:outline-none focus:border-cyber-lime focus:ring-2 focus:ring-cyber-lime/20 text-white placeholder-slate-light"
+                />
+                <button
+                  type="submit"
+                  class="px-6 py-3 bg-cyber-lime hover:bg-cyber-lime-hover text-obsidian font-semibold rounded-md transition-colors whitespace-nowrap min-w-[160px]"
+                >
+                  Join Alpha Waitlist
+                </button>
+              </form>
+              <p class="mt-6 text-sm text-slate-light flex items-center gap-2">
+                <svg class="w-4 h-4 text-cyber-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                No spam. Unsubscribe anytime. Your email stays local.
+              </p>
+              <div id="form-message" class="mt-4 hidden"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+          <div class="w-6 h-10 border-2 border-slate rounded-full flex justify-center pt-2">
+            <div class="w-1 h-2 bg-slate rounded-full animate-bounce"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Engine Preview Section -->
+      <section id="engine" class="py-24 bg-obsidian border-t border-slate/30">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Engine</h2>
+            <p class="text-lg text-slate-light max-w-2xl">
+              12 specialized subagents working in orchestration
+            </p>
+          </div>
+
+          <!-- Workflow diagram -->
+          <div class="flex flex-wrap items-center gap-4 text-sm font-mono text-slate-light mb-8">
+            <span class="text-cyber-lime">AUDIT</span>
+            <span>→</span>
+            <span class="text-cyber-lime">DEDUPE</span>
+            <span>→</span>
+            <span class="text-cyber-lime">RENAME</span>
+            <span>→</span>
+            <span class="text-cyber-lime">TRANSFER</span>
+            <span>→</span>
+            <span class="text-cyber-lime">BACKUP</span>
+            <span>→</span>
+            <span class="text-cyber-lime">REPORT</span>
+          </div>
+
+          <!-- Subagent grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="subagent-grid">
+            <!-- Populated by JavaScript -->
+          </div>
+
+          <!-- Summary stats -->
+          <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 p-6 border border-slate/50 rounded-lg bg-slate/5">
+            <div>
+              <div class="text-3xl font-bold text-white font-mono mb-1">12</div>
+              <div class="text-sm text-slate-light">Specialized Agents</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-white font-mono mb-1">6</div>
+              <div class="text-sm text-slate-light">Max Concurrent</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-white font-mono mb-1">11</div>
+              <div class="text-sm text-slate-light">Workflow Phases</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-cyber-lime font-mono mb-1">0</div>
+              <div class="text-sm text-slate-light">Cloud Dependencies</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roadmap Section -->
+      <section id="roadmap" class="py-24 bg-obsidian/50 border-t border-slate/30">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Roadmap</h2>
+            <p class="text-lg text-slate-light max-w-2xl">
+              6-month vision: from local alpha to studio-grade workflow
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" id="roadmap-grid">
+            <!-- Populated by JavaScript -->
+          </div>
+
+          <div class="mt-16 text-center">
+            <p class="text-lg text-slate-light mb-6">
+              Join the waitlist to get early access to each phase.
+            </p>
+            <div class="inline-flex items-center gap-2 text-cyber-lime font-mono text-sm">
+              <span>Alpha access opens Q1 2026</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-obsidian border-t border-slate/30">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-2">AXIOMATIC</h3>
+            <p class="text-sm text-slate-light">Local-First Media Organization</p>
+          </div>
+          <div class="flex flex-wrap gap-6 text-sm">
+            <a href="#" class="text-slate-light hover:text-cyber-lime transition-colors">Documentation</a>
+            <a href="#" class="text-slate-light hover:text-cyber-lime transition-colors">GitHub</a>
+            <a href="#" class="text-slate-light hover:text-cyber-lime transition-colors">Privacy</a>
+            <a href="#" class="text-slate-light hover:text-cyber-lime transition-colors">Contact</a>
+          </div>
+          <div class="text-right">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate/10 border border-slate/30 rounded-md">
+              <span class="w-2 h-2 rounded-full bg-cyber-lime animate-pulse"></span>
+              <span class="text-xs font-mono text-slate-light">ALPHA WAITLIST OPEN</span>
+            </div>
+          </div>
+        </div>
+        <div class="pt-8 border-t border-slate/30 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p class="text-xs text-slate-light">© 2026 AXIOMATIC. All rights reserved.</p>
+          <p class="text-xs text-slate-light font-mono">Built for professionals who value privacy.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // Subagent data
+      const SUBAGENTS = [
+        { id: 'SA-01', name: 'env-validator', purpose: 'Verify tool installations & dependencies', phase: 'Init' },
+        { id: 'SA-02', name: 'config-auditor', purpose: 'Validate settings.yaml & paths', phase: 'Init' },
+        { id: 'SA-03', name: 'db-init', purpose: 'Initialize SQLite schema', phase: 'Init' },
+        { id: 'SA-04', name: 'drive-scanner', purpose: 'Detect mounted drives', phase: 'Detect' },
+        { id: 'SA-05', name: 'audit-executor', purpose: 'Extract metadata & compute hashes', phase: 'Audit' },
+        { id: 'SA-06', name: 'dedupe-analyzer', purpose: 'Find exact & near-duplicates', phase: 'Dedupe' },
+        { id: 'SA-07', name: 'rename-planner', purpose: 'Generate rename preview', phase: 'Rename' },
+        { id: 'SA-08', name: 'transfer-executor', purpose: 'Move files with checksum verification', phase: 'Transfer' },
+        { id: 'SA-09', name: 'backup-verifier', purpose: 'Cross-check local/cloud hashes', phase: 'Verify' },
+        { id: 'SA-10', name: 'report-generator', purpose: 'Generate PDF/HTML reports', phase: 'Report' },
+        { id: 'SA-11', name: 'lightroom-reconciler', purpose: 'Reconcile catalog paths', phase: 'Reconcile' },
+        { id: 'SA-12', name: 'cleanup-archiver', purpose: 'Archive duplicates, rotate logs', phase: 'Cleanup' },
+      ];
+
+      const PHASE_COLORS = {
+        Init: 'bg-slate',
+        Detect: 'bg-blue-500',
+        Audit: 'bg-purple-500',
+        Dedupe: 'bg-orange-500',
+        Rename: 'bg-yellow-500',
+        Transfer: 'bg-green-500',
+        Verify: 'bg-cyan-500',
+        Report: 'bg-pink-500',
+        Reconcile: 'bg-indigo-500',
+        Cleanup: 'bg-red-500',
+      };
+
+      // Render subagent grid
+      const subagentGrid = document.getElementById('subagent-grid');
+      SUBAGENTS.forEach((agent, index) => {
+        const card = document.createElement('div');
+        card.className = 'group relative p-5 border border-slate/50 rounded-lg bg-slate/5 hover:border-cyber-lime/50 transition-all duration-200 fade-in';
+        card.style.animationDelay = `${index * 0.05}s`;
+        
+        card.innerHTML = `
+          <div class="absolute top-0 right-0 w-16 h-16 overflow-hidden rounded-tr-lg opacity-20">
+            <div class="absolute -top-8 -right-8 w-20 h-20 rotate-45 ${PHASE_COLORS[agent.phase] || 'bg-slate'}"></div>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs font-mono text-cyber-lime bg-cyber-lime/10 px-2 py-0.5 rounded">${agent.id}</span>
+            <span class="text-xs font-mono text-slate-light">${agent.phase}</span>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2 font-mono">${agent.name}</h3>
+          <p class="text-sm text-slate-light leading-relaxed">${agent.purpose}</p>
+        `;
+        
+        subagentGrid.appendChild(card);
+      });
+
+      // Render roadmap
+      const PHASES = [
+        {
+          phase: 'Phase 1',
+          title: 'Local Alpha',
+          timeframe: 'Q1 2026',
+          status: 'current',
+          features: [
+            'Core audit & metadata extraction',
+            'Hash-based duplicate detection',
+            'Batch rename with patterns',
+            'Local transfer with verification',
+          ],
+          icon: '🎯',
+        },
+        {
+          phase: 'Phase 2',
+          title: 'GPU Acceleration',
+          timeframe: 'Q2 2026',
+          status: 'upcoming',
+          features: [
+            'GPU-accelerated hash computation',
+            'Perceptual duplicate detection',
+            'Video thumbnail generation',
+            '10x faster processing',
+          ],
+          icon: '⚡',
+        },
+        {
+          phase: 'Phase 3',
+          title: 'Team/Studio Sync',
+          timeframe: 'Q4 2026',
+          status: 'planned',
+          features: [
+            'Multi-user workflow coordination',
+            'Shared catalog synchronization',
+            'Conflict resolution',
+            'Studio network deployment',
+          ],
+          icon: '👥',
+        },
+      ];
+
+      const roadmapGrid = document.getElementById('roadmap-grid');
+      PHASES.forEach((phase) => {
+        const card = document.createElement('div');
+        card.className = `relative p-6 rounded-lg border ${
+          phase.status === 'current'
+            ? 'border-cyber-lime/50 bg-cyber-lime/5'
+            : 'border-slate/50 bg-slate/5'
+        }`;
+        
+        const statusBadge = phase.status === 'current'
+          ? `<div class="mt-6 inline-flex items-center gap-2 px-3 py-1.5 bg-cyber-lime/10 border border-cyber-lime/30 rounded-md">
+               <span class="w-2 h-2 rounded-full bg-cyber-lime animate-pulse"></span>
+               <span class="text-xs font-mono text-cyber-lime">IN DEVELOPMENT</span>
+             </div>`
+          : `<div class="mt-6 inline-flex items-center gap-2 px-3 py-1.5 bg-slate/10 border border-slate/30 rounded-md">
+               <span class="text-xs font-mono text-slate-light">${phase.status.toUpperCase()}</span>
+             </div>`;
+        
+        card.innerHTML = `
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-2xl">${phase.icon}</span>
+            <div>
+              <div class="text-xs font-mono text-cyber-lime uppercase tracking-wide">${phase.phase}</div>
+              <div class="text-sm text-slate-light font-mono">${phase.timeframe}</div>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold mb-4 ${phase.status === 'current' ? 'text-white' : 'text-slate-light'}">${phase.title}</h3>
+          <ul class="space-y-2">
+            ${phase.features.map(f => `
+              <li class="flex items-start gap-2 text-sm text-slate-light">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 ${phase.status === 'current' ? 'text-cyber-lime' : 'text-slate'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>${f}</span>
+              </li>
+            `).join('')}
+          </ul>
+          ${statusBadge}
+        `;
+        
+        roadmapGrid.appendChild(card);
+      });
+
+      // Waitlist form handler
+      const waitlistForm = document.getElementById('waitlist-form');
+      const emailInput = document.getElementById('email');
+      const formMessage = document.getElementById('form-message');
+      const submitButton = waitlistForm.querySelector('button[type="submit"]');
+
+      waitlistForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!emailRegex.test(email)) {
+          formMessage.className = 'mt-4 text-sm text-red-400 font-mono';
+          formMessage.textContent = 'Please enter a valid email address';
+          formMessage.classList.remove('hidden');
+          return;
+        }
+
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Joining...';
+        formMessage.classList.add('hidden');
+
+        try {
+          // Mock API call - replace with actual endpoint
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          console.log(`Waitlist submission: ${email} → /api/waitlist`);
+          
+          // Success state
+          formMessage.className = 'mt-4 p-4 border border-cyber-lime/30 bg-cyber-lime/10 rounded-md';
+          formMessage.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-cyber-lime flex items-center justify-center">
+                <svg class="w-5 h-5 text-obsidian" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white">You're on the list!</div>
+                <div class="text-sm text-slate-light">We'll notify you when alpha access opens.</div>
+              </div>
+            </div>
+          `;
+          formMessage.classList.remove('hidden');
+          emailInput.value = '';
+        } catch (error) {
+          formMessage.className = 'mt-4 text-sm text-red-400 font-mono';
+          formMessage.textContent = 'Something went wrong. Please try again.';
+          formMessage.classList.remove('hidden');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Join Alpha Waitlist';
+        }
+      });
+
+      // Smooth scroll for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

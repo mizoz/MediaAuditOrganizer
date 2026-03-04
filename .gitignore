@@ -1,3 +1,26 @@
+# EXCLUDE MASSIVE MEDIA FOLDERS
+00_INCOMING/
+01_INPUTS/
+01_PHOTOS/
+02_VIDEOS/
+05_BACKUPS/
+09_ARCHIVE/
+
+# EXCLUDE GENERATED/TEMP FILES
+*.log
+*.tmp
+*.cache
+06_METADATA/*.db
+07_LOGS/
+08_REPORTS/*.html
+08_REPORTS/*.csv
+05_SIDECARS/
+
+# EXCLUDE SYSTEM FILES
+.DS_Store
+Thumbs.db
+*.lock
+
 # Python
 __pycache__/
 *.py[cod]
@@ -36,14 +59,9 @@ ENV/
 
 # Logs
 logs/
-*.log
 
 # Reports
 reports/
-
-# OS
-.DS_Store
-Thumbs.db
 
 # Testing
 .pytest_cache/
@@ -56,3 +74,11 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# KEEP THESE (code + config)
+!gui/
+!scripts/
+!*.md
+!*.yaml
+!*.json
+!*.html

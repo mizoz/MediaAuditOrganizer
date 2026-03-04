@@ -1,6 +1,7 @@
 # /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/configs/settings.yaml
 # MediaAuditOrganizer Configuration File
 # Generated: 2026-03-03 20:21 MST
+# Updated: 2026-03-03 22:53 MST — Path Configuration Review
 # Status: PRODUCTION READY
 
 # =============================================================================
@@ -121,11 +122,14 @@ transfer:
 backup:
   local_enabled: true
   local_remote_name: "local_backup"
-  local_path: "/mnt/backup_drive/05_BACKUPS/"
+  # UPDATED: Using workspace backup directory for initial testing
+  # User should update this to external drive path when available
+  local_path: "/home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/05_BACKUPS/local/"
   local_schedule: "daily"
   local_time: "02:00"
   
-  cloud_enabled: true
+  # DISABLED: Cloud backup removed from scope (rclone not configured)
+  cloud_enabled: false
   cloud_remote_name: "myr2"
   cloud_bucket: "media-backup-az"
   cloud_provider: "r2"
@@ -162,7 +166,9 @@ backup:
 # LIGHTROOM INTEGRATION
 # =============================================================================
 lightroom:
-  enabled: true
+  # DISABLED: User needs to confirm Lightroom usage
+  # Set enabled: true and update master_catalog path if using Lightroom
+  enabled: false
   master_catalog: "~/Lightroom/Master_Catalog.lrcat"
   project_catalogs_dir: "~/Lightroom/Project_Catalogs"
   archive_catalogs_dir: "~/Lightroom/Archive_Catalogs"
