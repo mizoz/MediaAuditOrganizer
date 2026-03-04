@@ -12,6 +12,7 @@
 
 ## Recent Activity
 
+- ✅ **2026-03-04 07:21** — GUI verified & serving at http://10.0.0.20:4173
 - ✅ **2026-03-04 07:06** — Media root wired: /home/az/AXIOMATIC/03_PROJECTS/ALPHA_BATCH (500 files confirmed)
 - ✅ **2026-03-04 07:00** — 00_INCOMING analysis complete: 16 files scanned, 0 media found
 - ✅ **2026-03-04 07:00** — 00_INCOMING audited — 16 files processed, 0 sidecars created (no media files present)
