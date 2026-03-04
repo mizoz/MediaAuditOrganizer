@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-03-04T07:30:04-07:00",
+  "media": {
+    "root": "/home/az/AXIOMATIC/03_PROJECTS/ALPHA_BATCH",
+    "total_files": 500,
+    "size_gb": 16.68,
+    "format": "ARW (Sony RAW)",
+    "batch": "ALPHA_BATCH",
+    "verified": true,
+    "sha256_verified": 500
+  },
+  "drives": [
+    {
+      "name": "drive64gb",
+      "status": "ejected",
+      "files": 500,
+      "size_gb": 16.68,
+      "verified_at": "2026-03-04T01:44:00-07:00"
+    }
+  ],
+  "database": {
+    "path": "06_METADATA/media_audit.db",
+    "tables": 13,
+    "total_tasks": 6,
+    "complete": 6,
+    "failed": 0
+  },
+  "system": {
+    "os": "Pop!_OS Linux",
+    "gpu": "GTX 960",
+    "ffmpeg_nvenc": true,
+    "tauri_backend": "compiled",
+    "last_commit": "19ab337"
+  },
+  "workflow": [
+    { "phase": "drive64gb Transfer", "status": "complete", "files": 500 },
+    { "phase": "SHA256 Verification", "status": "complete", "files": 500 },
+    { "phase": "Checkpoint Sync", "status": "complete", "files": 500 },
+    { "phase": "Sidecar Creation", "status": "complete", "files": 500 },
+    { "phase": "00_INCOMING Scan", "status": "complete", "files": 0 },
+    { "phase": "GUI Launch", "status": "complete", "files": 0 }
+  ]
+}

@@ -1,0 +1,13 @@
+[{"name":"assets","type":"table"},
+{"name":"sqlite_sequence","type":"table"},
+{"name":"exif_data","type":"table"},
+{"name":"video_metadata","type":"table"},
+{"name":"duplicates","type":"table"},
+{"name":"transfers","type":"table"},
+{"name":"backups","type":"table"},
+{"name":"lightroom_catalog","type":"table"},
+{"name":"ingestion_logs","type":"table"},
+{"name":"rename_history","type":"table"},
+{"name":"integrity_checks","type":"table"},
+{"name":"config_snapshots","type":"table"},
+{"name":"execution_logs","type":"table"}]
