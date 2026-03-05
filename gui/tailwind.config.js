@@ -41,6 +41,35 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // ZalaStack Brand Colors
+        // Primary Amber - main accent and CTAs
+        amber: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#F5A623", // Brand Primary Amber
+          600: "#d97706",
+          700: "#b45309",
+          800: "#92400e",
+          900: "#78350f",
+          950: "#451a03",
+        },
+        // Dark Background - primary brand background
+        "brand-dark": {
+          50: "#f5f5f5",
+          100: "#e5e5e5",
+          200: "#d4d4d4",
+          300: "#a3a3a3",
+          400: "#737373",
+          500: "#525252",
+          600: "#404040",
+          700: "#262626",
+          800: "#1A1A1A", // Secondary Gray
+          900: "#0A0A0A", // Primary Dark Background
+          950: "#000000",
+        },
         // Obsidian palette (deep black-gray base)
         obsidian: {
           50: "#f8f9fa",
@@ -142,6 +171,39 @@ export default {
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "spin-slow": "spin 3s linear infinite",
+        // ZalaStack brand animations
+        "fade-in": "fadeIn 0.2s ease-out",
+        "fade-in-up": "fadeInUp 0.3s ease-out",
+        "fade-in-down": "fadeInDown 0.3s ease-out",
+        "slide-in-right": "slideInRight 0.3s ease-out",
+        "scale-in": "scaleIn 0.2s ease-out",
+        "glow": "glow 2s ease-in-out infinite",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeInDown: {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        slideInRight: {
+          "0%": { opacity: "0", transform: "translateX(20px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        scaleIn: {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        glow: {
+          "0%, 100%": { boxShadow: "0 0 5px rgba(245, 166, 35, 0.2)" },
+          "50%": { boxShadow: "0 0 20px rgba(245, 166, 35, 0.4)" },
+        },
       },
     },
   },

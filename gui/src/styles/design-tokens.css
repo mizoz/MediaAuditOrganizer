@@ -7,6 +7,33 @@
 :root {
   /* ===== COLOR PALETTE ===== */
   
+  /* ZalaStack Brand Colors */
+  /* Primary Amber - brand accent and CTAs */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #F5A623; /* ZalaStack Primary Amber */
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+  
+  /* Brand Dark - ZalaStack background */
+  --color-brand-dark-50: #f5f5f5;
+  --color-brand-dark-100: #e5e5e5;
+  --color-brand-dark-200: #d4d4d4;
+  --color-brand-dark-300: #a3a3a3;
+  --color-brand-dark-400: #737373;
+  --color-brand-dark-500: #525252;
+  --color-brand-dark-600: #404040;
+  --color-brand-dark-700: #262626;
+  --color-brand-dark-800: #1A1A1A; /* Secondary Gray */
+  --color-brand-dark-900: #0A0A0A; /* Primary Dark Background */
+  --color-brand-dark-950: #000000;
+  
   /* Primary - Obsidian (deep black-gray base) */
   --color-obsidian-50: #f8f9fa;
   --color-obsidian-100: #e9ecef;
@@ -53,9 +80,10 @@
   --color-status-error: #ef4444;      /* Red-500 */
   --color-status-warning: #f59e0b;    /* Amber-500 */
   
-  /* Semantic Colors */
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
+  /* Semantic Colors - ZalaStack branded */
+  --color-primary: #F5A623; /* ZalaStack Amber */
+  --color-primary-hover: #d97706;
+  --color-primary-light: #fcd34d;
   --color-secondary: #475569;
   --color-destructive: #ef4444;
   --color-destructive-hover: #dc2626;
@@ -148,10 +176,10 @@
   --sidebar-width: 16rem;      /* 256px */
   --sidebar-collapsed-width: 4rem;
   
-  /* ===== DARK MODE DEFAULTS ===== */
+  /* ===== DARK MODE DEFAULTS - ZalaStack Branded ===== */
   
-  --bg-primary: var(--color-obsidian-900);
-  --bg-secondary: var(--color-slate-900);
+  --bg-primary: var(--color-brand-dark-900); /* #0A0A0A */
+  --bg-secondary: var(--color-brand-dark-800); /* #1A1A1A */
   --bg-tertiary: var(--color-slate-800);
   --bg-elevated: var(--color-slate-800);
   
@@ -162,7 +190,7 @@
   
   --border-primary: var(--color-slate-800);
   --border-secondary: var(--color-slate-700);
-  --border-accent: var(--color-cyber-lime-500);
+  --border-accent: var(--color-amber-500); /* ZalaStack Amber */
 }
 
 /* ===== UTILITY CLASSES ===== */
