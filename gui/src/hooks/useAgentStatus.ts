@@ -1,12 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { mockAgents } from '../mock/data';
+import { invoke } from '@tauri-apps/api/core';
 import type { SubAgent } from '../types';
 
-// In production, this would call a Tauri command to get real agent status
+// Convert Rust SubAgent to frontend type (handles snake_case to camelCase)
+function convertSubAgent(agent: any): SubAgent {
+  return {
+    id: agent.id,
+    name: agent.name,
+    status: agent.status as SubAgent['status'],
+    progress: agent.progress ?? undefined,
+    logs: agent.logs ?? undefined,
+    eta: agent.eta ?? undefined,
+    lastUpdated: new Date(agent.last_updated),
+  };
+}
+
 async function fetchAgentStatus(): Promise<SubAgent[]> {
-  // TODO: Replace with actual Tauri command
-  // return invoke<SubAgent[]>('get_agent_status');
-  return mockAgents;
+  try {
+    const agents = await invoke<any[]>('get_agent_status');
+    return agents.map(convertSubAgent);
+  } catch (error) {
+    console.error('Failed to fetch agent status:', error);
+    throw error;
+  }
 }
 
 export function useAgentStatus() {

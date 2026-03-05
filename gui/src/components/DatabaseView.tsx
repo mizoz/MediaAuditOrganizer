@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, AlertCircle, Loader2 } from 'lucide-react';
 import { cn, formatBytes, formatDate } from '@/lib/utils';
 import {
   Table,
@@ -10,8 +10,8 @@ import {
   TableCell,
 } from './ui/table';
 import { Button } from './ui/button';
-import { mockAssets } from '@/mock/data';
 import type { Asset, AssetType, DatabaseFilter, DatabaseSort } from '@/types';
+import { useDatabaseQuery } from '@/hooks/useDatabase';
 
 interface DatabaseViewProps {
   className?: string;
@@ -22,67 +22,28 @@ const ASSET_TYPES: AssetType[] = ['photo', 'video', 'audio', 'document', 'other'
 export function DatabaseView({ className }: DatabaseViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<DatabaseFilter>({});
-  const [sort, setSort] = useState<DatabaseSort>({ field: 'createdAt', direction: 'desc' });
+  const [sort, setSort] = useState<DatabaseSort>({ field: 'filename', direction: 'asc' });
   const [page, setPage] = useState(1);
   const pageSize = 100;
 
-  // Filter and sort assets
-  const filteredAssets = useMemo(() => {
-    let result = [...mockAssets];
+  const query = useMemo(() => ({
+    filters: {
+      ...filter,
+      searchQuery: searchQuery || undefined,
+    },
+    sort,
+    page,
+    pageSize,
+  }), [filter, sort, page, searchQuery]);
 
-    // Apply search
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        asset =>
-          asset.filename.toLowerCase().includes(query) ||
-          asset.path.toLowerCase().includes(query) ||
-          asset.cameraModel?.toLowerCase().includes(query)
-      );
-    }
+  const { data, isLoading, error } = useDatabaseQuery(query);
 
-    // Apply filters
-    if (filter.assetType) {
-      result = result.filter(asset => asset.type === filter.assetType);
-    }
-    if (filter.cameraModel) {
-      result = result.filter(
-        asset => asset.cameraModel === filter.cameraModel
-      );
-    }
-    if (filter.dateFrom) {
-      result = result.filter(asset => asset.createdAt >= filter.dateFrom!);
-    }
-    if (filter.dateTo) {
-      result = result.filter(asset => asset.createdAt <= filter.dateTo!);
-    }
-    if (filter.sizeMin) {
-      result = result.filter(asset => asset.size >= filter.sizeMin!);
-    }
-    if (filter.sizeMax) {
-      result = result.filter(asset => asset.size <= filter.sizeMax!);
-    }
-
-    // Apply sorting
-    result.sort((a, b) => {
-      const aVal = a[sort.field];
-      const bVal = b[sort.field];
-      
-      if (aVal === undefined || bVal === undefined) return 0;
-      
-      const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-      return sort.direction === 'asc' ? comparison : -comparison;
-    });
-
-    return result;
-  }, [searchQuery, filter, sort]);
-
-  // Pagination
-  const totalPages = Math.ceil(filteredAssets.length / pageSize);
-  const paginatedAssets = filteredAssets.slice(
-    (page - 1) * pageSize,
-    page * pageSize
-  );
+  // Camera models extracted from data for filter dropdown
+  const cameraModels = useMemo(() => {
+    if (!data?.assets) return [];
+    const models = new Set(data.assets.map(a => a.cameraModel).filter(Boolean));
+    return Array.from(models).sort();
+  }, [data?.assets]);
 
   const handleSort = (field: keyof Asset) => {
     setSort(prev => ({
@@ -100,6 +61,26 @@ export function DatabaseView({ className }: DatabaseViewProps) {
     );
   };
 
+  if (isLoading) {
+    return (
+      <div className={cn('flex items-center justify-center h-full', className)}>
+        <Loader2 className="h-8 w-8 text-slate-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={cn('flex items-center justify-center h-full flex-col gap-4', className)}>
+        <AlertCircle className="h-12 w-12 text-status-error" />
+        <div className="text-center">
+          <p className="text-lg font-semibold text-status-error">Failed to load database</p>
+          <p className="text-sm text-slate-400">{String(error)}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn('flex flex-col h-full bg-slate-900', className)}>
       {/* Header */}
@@ -108,10 +89,10 @@ export function DatabaseView({ className }: DatabaseViewProps) {
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Asset Database</h2>
             <p className="text-sm text-slate-400">
-              {filteredAssets.length.toLocaleString()} assets found
+              {data?.total?.toLocaleString() || 0} assets found
             </p>
           </div>
-          
+
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
@@ -143,7 +124,7 @@ export function DatabaseView({ className }: DatabaseViewProps) {
               ))}
             </select>
           </div>
-          
+
           <select
             value={filter.cameraModel || ''}
             onChange={e => setFilter(prev => ({
@@ -153,9 +134,9 @@ export function DatabaseView({ className }: DatabaseViewProps) {
             className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-md text-sm text-slate-200 focus:outline-none"
           >
             <option value="">All Cameras</option>
-            <option value="Canon EOS R5">Canon EOS R5</option>
-            <option value="Sony A7R IV">Sony A7R IV</option>
-            <option value="Nikon Z9">Nikon Z9</option>
+            {cameraModels.map(model => (
+              <option key={model} value={model}>{model}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -215,7 +196,7 @@ export function DatabaseView({ className }: DatabaseViewProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedAssets.map((asset, index) => (
+            {data?.assets.map((asset, index) => (
               <TableRow key={asset.id} className="border-slate-800">
                 <TableCell className="text-slate-500">
                   {(page - 1) * pageSize + index + 1}
@@ -249,6 +230,13 @@ export function DatabaseView({ className }: DatabaseViewProps) {
                 </TableCell>
               </TableRow>
             ))}
+            {(!data?.assets || data.assets.length === 0) && (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-12 text-slate-400">
+                  No assets found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -256,7 +244,7 @@ export function DatabaseView({ className }: DatabaseViewProps) {
       {/* Pagination */}
       <div className="p-4 border-t border-slate-800 flex items-center justify-between">
         <p className="text-sm text-slate-400">
-          Page {page} of {totalPages}
+          Page {page} of {data?.totalPages || 1}
         </p>
         <div className="flex items-center gap-2">
           <Button
@@ -271,8 +259,8 @@ export function DatabaseView({ className }: DatabaseViewProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
+            onClick={() => setPage(p => Math.min(data?.totalPages || 1, p + 1))}
+            disabled={page === data?.totalPages}
             className="border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50"
           >
             <ChevronRight className="h-4 w-4" />

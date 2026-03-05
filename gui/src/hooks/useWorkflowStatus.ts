@@ -1,12 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import { mockWorkflowPhases } from '../mock/data';
+import { invoke } from '@tauri-apps/api/core';
 import type { WorkflowPhase } from '../types';
 
-// In production, this would call a Tauri command to get real workflow status
+// Convert Rust WorkflowPhase to frontend type (handles snake_case to camelCase)
+function convertWorkflowPhase(phase: any): WorkflowPhase {
+  return {
+    id: phase.id,
+    name: phase.name,
+    description: phase.description,
+    status: phase.status as WorkflowPhase['status'],
+    progress: phase.progress,
+    dependencies: phase.dependencies ?? undefined,
+    startedAt: phase.started_at ? new Date(phase.started_at) : undefined,
+    completedAt: phase.completed_at ? new Date(phase.completed_at) : undefined,
+  };
+}
+
 async function fetchWorkflowStatus(): Promise<WorkflowPhase[]> {
-  // TODO: Replace with actual Tauri command
-  // return invoke<WorkflowPhase[]>('get_workflow_status');
-  return mockWorkflowPhases;
+  try {
+    const phases = await invoke<any[]>('get_workflow_phases');
+    return phases.map(convertWorkflowPhase);
+  } catch (error) {
+    console.error('Failed to fetch workflow status:', error);
+    throw error;
+  }
 }
 
 export function useWorkflowStatus() {

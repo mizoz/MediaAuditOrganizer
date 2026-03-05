@@ -33,19 +33,19 @@ export function getStatusColor(status: string): string {
     case "success":
     case "verified":
     case "completed":
-      return "text-green-600 bg-green-100";
+      return "bg-status-success";
     case "processing":
     case "active":
     case "running":
-      return "text-blue-600 bg-blue-100";
+      return "bg-status-processing";
     case "pending":
-      return "text-yellow-600 bg-yellow-100";
+      return "bg-status-idle";
     case "error":
     case "failed":
-      return "text-red-600 bg-red-100";
+      return "bg-status-error";
     case "cancelled":
-      return "text-gray-600 bg-gray-100";
+      return "bg-slate-600";
     default:
-      return "text-gray-600 bg-gray-100";
+      return "bg-slate-600";
   }
 }

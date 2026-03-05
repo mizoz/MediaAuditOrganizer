@@ -7,7 +7,23 @@
       "Bash(source .venv/bin/activate && pip install flask flask-socketio flask-cors eventlet jinja2 plotly pandas pyyaml xxhash 2>&1 | tail -20)",
       "Bash(brew install exiftool fd rclone rdfind 2>&1 | tail -30)",
       "Bash(exiftool -ver && ffprobe -version 2>&1 | head -1 && fd --version && rclone version 2>&1 | head -1 && rdfind --version 2>&1 | head -1)",
-      "Bash(source .venv/bin/activate && python3 -c \"import jinja2, plotly, pandas, yaml, xxhash, flask, flask_socketio; print\\('All Python packages OK'\\)\")"
+      "Bash(source .venv/bin/activate && python3 -c \"import jinja2, plotly, pandas, yaml, xxhash, flask, flask_socketio; print\\('All Python packages OK'\\)\")",
+      "Bash(find /home/az/.openclaw/workspace/zalastack -type f -name \"*.md\" -o -name \"*.json\" -o -name \"*.ts\" -o -name \"*.tsx\" 2>/dev/null | head -30)",
+      "Bash(find /home/az/.openclaw/workspace/zalastack-brand -type f -name \"*.md\" -o -name \"*.json\" -o -name \"*.ts\" -o -name \"*.tsx\" 2>/dev/null | head -30)",
+      "Bash(grep -r \"vercel\\\\|vercel\\\\.app\\\\|http\" /home/az/.openclaw/workspace/zalastack-brand/*.md /home/az/.openclaw/workspace/zalastack-brand/src/*.md 2>/dev/null | head -30)",
+      "Bash(find /home/az/.openclaw/workspace/zalastack-brand -name \"*.json\" -o -name \".env*\" -o -name \"vercel.json\" 2>/dev/null | head -20)",
+      "Bash(git clone --depth 1 https://github.com/mizoz/MediaAuditOrganizer.git /tmp/MediaAuditOrganizer 2>&1)",
+      "Bash(cat /home/az/.openclaw/workspace/zalastack/supabase/migrations/*.sql 2>/dev/null | head -150)",
+      "Bash(curl -sI https://zalastack.com 2>&1 | head -10)",
+      "Bash(cd /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/gui && sed -i 's/return \"text-green-600 bg-green-100\"/return \"bg-status-success\"/g; s/return \"text-blue-600 bg-blue-100\"/return \"bg-status-processing\"/g; s/return \"text-yellow-600 bg-yellow-100\"/return \"bg-status-idle\"/g; s/return \"text-red-600 bg-red-100\"/return \"bg-status-error\"/g; s/return \"text-gray-600 bg-gray-100\"/return \"bg-slate-600\"/g; s/\"text-status-idle\"/\"bg-status-idle\"/g' src/lib/utils.ts)",
+      "Bash(npm run build 2>&1 | head -100)",
+      "Bash(curl -s \"https://clerk.com/pricing\" | grep -i \"free\" -A 5 | head -30 || echo \"Could not fetch pricing, checking docs instead\")",
+      "Bash(find /home/az/.openclaw/workspace/zalastack/src -name \"*.tsx\" 2>/dev/null | head -30)",
+      "Bash(cd /home/az/.openclaw/workspace/zalastack && npm run build 2>&1 | tail -20)",
+      "Bash(npm run build 2>&1 | tail -20)",
+      "Bash(npm run build 2>&1 | tail -15)",
+      "Bash(git add -A && git commit -m \"feat: auth hardening complete — Clerk 2FA, profile, security pages\" && git push 2>&1 | tail -10)",
+      "Bash(ls -la /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/scripts/*.py | head -10)"
     ]
   }
 }

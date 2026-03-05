@@ -257,17 +257,23 @@ async fn query_database(
 
 #[tauri::command]
 fn run_audit(source: String, target: String, dry_run: bool) -> Result<CommandResponse<serde_json::Value>, String> {
+    use std::process::Command;
+    
     log::info!("Running audit: source={}, target={}, dry_run={}", source, target, dry_run);
     
-    // In production, this would spawn the Python sidecar
-    // let output = Command::new("python")
-    //     .arg("../scripts/audit_drive.py")
-    //     .arg("--source")
-    //     .arg(&source)
-    //     .arg("--target")
-    //     .arg(&target)
-    //     .output()
-    //     .map_err(|e| e.to_string())?;
+    let script_path = PathBuf::from("../scripts/audit_drive.py");
+    if !script_path.exists() {
+        return Err(format!("Python script not found at {:?}", script_path));
+    }
+    
+    let mut cmd = Command::new("python3");
+    cmd.arg(&script_path).arg(&source).arg("--output-dir").arg("../reports");
+    
+    if dry_run {
+        cmd.arg("--verbose");
+    }
+    
+    cmd.spawn().map_err(|e| format!("Failed to spawn Python sidecar: {}", e))?;
     
     Ok(CommandResponse {
         success: true,
@@ -275,7 +281,8 @@ fn run_audit(source: String, target: String, dry_run: bool) -> Result<CommandRes
             "message": "Audit started",
             "source": source,
             "target": target,
-            "dry_run": dry_run
+            "dry_run": dry_run,
+            "script": script_path.to_string_lossy()
         })),
         error: None,
     })
