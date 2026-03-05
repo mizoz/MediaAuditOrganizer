@@ -1,0 +1,11 @@
+node_modules
+.git
+src
+src-tauri
+tauri
+templates
+landing
+static
+*.md
+.vercel/output
+package-lock.json
