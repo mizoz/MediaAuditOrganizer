@@ -23,7 +23,9 @@
       "Bash(npm run build 2>&1 | tail -20)",
       "Bash(npm run build 2>&1 | tail -15)",
       "Bash(git add -A && git commit -m \"feat: auth hardening complete — Clerk 2FA, profile, security pages\" && git push 2>&1 | tail -10)",
-      "Bash(ls -la /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/scripts/*.py | head -10)"
+      "Bash(ls -la /home/az/.openclaw/workspace/AZ_Projects/MediaAuditOrganizer/scripts/*.py | head -10)",
+      "Bash(git pull --rebase && git push 2>&1 | tail -5)",
+      "Bash(git add -A && git commit -m \"fix: main.rs Python sidecar wiring\" && git pull --rebase && git push 2>&1 | tail -5)"
     ]
   }
 }
